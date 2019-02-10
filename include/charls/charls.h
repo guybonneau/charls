@@ -10,6 +10,46 @@ extern "C" {
 #include <stddef.h>
 #endif
 
+typedef struct charls_jpegls_decoder charls_jpegls_decoder;
+
+CHARLS_API_IMPORT_EXPORT charls_jpegls_decoder* CHARLS_API_CALLING_CONVENTION
+charls_jpegls_decoder_create(void);
+
+CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
+charls_jpegls_decoder_destroy(charls_jpegls_decoder* decoder);
+
+CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
+charls_jpegls_decoder_source_buffer(charls_jpegls_decoder* decoder, const void* buffer, size_t size);
+
+CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
+charls_jpegls_decoder_read_spiff_header(charls_jpegls_decoder* decoder, void* header); // ok, not_present, not_valid
+
+CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
+charls_jpegls_decoder_read_header(charls_jpegls_decoder* decoder);
+
+CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
+charls_jpegls_decoder_decode_to_buffer(charls_jpegls_decoder* decoder, void* buffer, size_t size);
+
+
+
+typedef struct charls_jpegls_encoder charls_jpegls_encoder;
+
+CHARLS_API_IMPORT_EXPORT charls_jpegls_encoder* CHARLS_API_CALLING_CONVENTION
+charls_jpegls_encoder_create(void);
+
+CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
+charls_jpegls_encoder_destroy(charls_jpegls_encoder* encoder);
+
+CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
+charls_jpegls_encoder_destination_buffer(charls_jpegls_encoder* encoder, void* buffer, size_t size);
+
+CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
+charls_jpegls_encoder_size(charls_jpegls_encoder* encoder, int32_t width, int32_t height);
+
+CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
+charls_jpegls_encoder_encode_from_buffer(charls_jpegls_encoder* encoder, const void* source, size_t source_size);
+
+
 /// <summary>
 /// Encodes a byte array with pixel data to a JPEG-LS encoded (compressed) byte array.
 /// </summary>

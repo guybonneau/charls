@@ -2,16 +2,13 @@
 
 #include "charls.h"
 
-#include <vector>
 #include <cstddef>
-#include <filesystem>
+#include <vector>
 
 // WARNING: THESE CLASSES ARE NOT FINAL AND THEIR DESIGN AND API MAY CHANGE
 
-#if __cplusplus >= 201703L
-
-namespace charls {
-
+namespace charls
+{
 struct metadata_info_t
 {
     int32_t width;
@@ -24,10 +21,16 @@ struct metadata_info_t
 class jpegls_decoder final
 {
 public:
-    void read_header(const void* source, const size_t source_size_bytes)
+    void source_buffer(const void* source, const size_t source_size_bytes) const
     {
-        std::error_code ec;
-        read_header(source, source_size_bytes, ec);
+        const std::error_code ec = charls_jpegls_decoder_source_buffer(decoder_.get(), source, source_size_bytes);
+        if (ec)
+            throw jpegls_error(ec);
+    }
+
+    void read_header() const
+    {
+        const std::error_code ec = charls_jpegls_decoder_read_header(decoder_.get());
         if (ec)
             throw jpegls_error(ec);
     }
@@ -40,7 +43,7 @@ public:
 
         source_ = source;
         source_size_bytes_ = source_size_bytes;
-        metadata_ = { params_.width, params_.height, params_.bitsPerSample, params_.components };
+        metadata_ = {params_.width, params_.height, params_.bitsPerSample, params_.components};
     }
 
     const metadata_info_t& metadata_info() const noexcept
@@ -67,12 +70,20 @@ public:
     }
 
 private:
+    static charls_jpegls_decoder* create_decoder()
+    {
+        charls_jpegls_decoder* decoder = charls_jpegls_decoder_create();
+        if (!decoder)
+            throw std::bad_alloc();
+
+        return decoder;
+    }
+
+    std::unique_ptr<charls_jpegls_decoder, void (*)(charls_jpegls_decoder*)> decoder_{create_decoder(), charls_jpegls_decoder_destroy};
     const void* source_{};
     size_t source_size_bytes_{};
     JlsParameters params_{};
     metadata_info_t metadata_{};
 };
 
-}
-
-#endif // __cplusplus
+} // namespace charls

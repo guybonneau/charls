@@ -245,8 +245,10 @@
     <None Include="JpegStreamWriter.cd" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="charls_jpegls_decoder.cpp" />
     <ClCompile Include="interface.cpp" />
     <ClCompile Include="jpegls.cpp" />
+    <ClCompile Include="charls_jpegls_encoder.cpp" />
     <ClCompile Include="jpegls_error.cpp" />
     <ClCompile Include="jpeg_stream_reader.cpp" />
     <ClCompile Include="jpeg_stream_writer.cpp" />
@@ -281,7 +283,7 @@
     <ResourceCompile Include="charls.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(TargetPath)" >
+    <Content Include="$(TargetPath)">
       <Link>%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
