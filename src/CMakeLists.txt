@@ -22,6 +22,8 @@ target_sources(charls
     "${CMAKE_CURRENT_SOURCE_DIR}/include/charls/jpegls_error.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/charls/public_types.h"
   PRIVATE
+    "${CMAKE_CURRENT_LIST_DIR}/charls_jpegls_decoder.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/charls_jpegls_encoder.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/color_transform.h"
     "${CMAKE_CURRENT_LIST_DIR}/constants.h"
     "${CMAKE_CURRENT_LIST_DIR}/context.h"

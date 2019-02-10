@@ -6,6 +6,7 @@
 #include "jpeg_stream_reader.h"
 #include "util.h"
 
+#include <memory>
 #include <new>
 
 using namespace charls;
