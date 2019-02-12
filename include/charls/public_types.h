@@ -380,10 +380,11 @@ typedef struct charls_spiff_header
     charls_spiff_color_space color_space;           // Color space used by image data
     uint8_t bits_per_sample;                        //  Number of bits per sample
     charls_spiff_compression_type compression_type; // Type of data compression used
-    charls_spiff_resolution_units ResolutionUnits;  // Type of resolution units
+    charls_spiff_resolution_units resolution_units; // Type of resolution units
     int32_t vertical_resolution;                    // Vertical resolution
     int32_t horizontal_resolution;                  // Horizontal resolution
 } charls_spiff_header;
+
 
 /// <summary>
 /// Defines the parameters for the JPEG File Interchange Format.
@@ -499,6 +500,14 @@ struct JlsParameters
 
 
 #ifdef __cplusplus
+
+namespace charls
+{
+
+using spiff_header = charls_spiff_header;
+
+}
+
 
 #include <iostream>
 

@@ -9,7 +9,6 @@
 
 namespace charls
 {
-
 enum class JpegMarkerCode : uint8_t;
 
 // Purpose: minimal implementation to read a JPEG byte stream.
@@ -29,7 +28,7 @@ public:
     }
 
     void Read(ByteStreamInfo rawPixels);
-    void ReadHeader();
+    void ReadHeader(spiff_header* spiff_header = nullptr, bool* spiff_header_found = nullptr);
 
     void SetInfo(const JlsParameters& params) noexcept
     {
@@ -47,23 +46,38 @@ public:
 private:
     void SkipByte();
     int ReadUInt16();
+    int32_t ReadInt32();
     int32_t ReadSegmentSize();
     void ReadNBytes(std::vector<char>& destination, int byteCount);
     JpegMarkerCode ReadNextMarkerCode();
     void ValidateMarkerCode(JpegMarkerCode markerCode) const;
 
-    int ReadMarkerSegment(JpegMarkerCode markerCode, int32_t segmentSize);
+    int ReadMarkerSegment(JpegMarkerCode markerCode, int32_t segmentSize, spiff_header* spiff_header, bool* spiff_header_found);
     int ReadStartOfFrameSegment(int32_t segmentSize);
     static int ReadComment() noexcept;
     int ReadPresetParametersSegment(int32_t segmentSize);
     void ReadJfif();
+    int TryReadApplicationData8Segment(int32_t segmentSize, spiff_header* spiff_header, bool* spiff_header_found);
+    int TryReadSpiffHeaderSegment(int32_t segmentSize, spiff_header* spiff_header, bool& spiff_header_found);
+
     int TryReadHPColorTransformSegment(int32_t segmentSize);
     void AddComponent(uint8_t componentId);
+
+    enum class state
+    {
+        created,
+        header,
+        spiff_header,
+        image,
+        frame,
+        scan
+    };
 
     ByteStreamInfo byteStream_;
     JlsParameters params_{};
     JlsRect rect_{};
     std::vector<uint8_t> componentIds_;
+    state state_{};
 };
 
 } // namespace charls
