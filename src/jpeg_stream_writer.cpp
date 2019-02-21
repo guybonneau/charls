@@ -41,7 +41,7 @@ void JpegStreamWriter::WriteEndOfImage()
 }
 
 
-void JpegStreamWriter::WriteSpiffSegment(const spiff_header& spiff_header)
+void JpegStreamWriter::WriteSpiffHeaderSegment(const spiff_header& spiff_header)
 {
     ASSERT(spiff_header.height > 0);
     ASSERT(spiff_header.width > 0);
@@ -61,6 +61,17 @@ void JpegStreamWriter::WriteSpiffSegment(const spiff_header& spiff_header)
     push_back(segment, static_cast<uint32_t>(spiff_header.vertical_resolution));
     push_back(segment, static_cast<uint32_t>(spiff_header.horizontal_resolution));
 
+    WriteSegment(JpegMarkerCode::ApplicationData8, segment.data(), segment.size());
+}
+
+
+void JpegStreamWriter::WriteSpiffEndOfDirectoryEntry()
+{
+    // Note: ISO/IEC 10918-3, Annex F.2.2.3 documents that the EOD entry segment should have a length of 8
+    // but only 6 data bytes. This approach allows to postfix existing bitstreams\encoders with a SPIFF header.
+    // In this implementation the SOI marker is added as data bytes to simplify the design.
+
+    array<uint8_t, 6> segment{0, 0, 0, 1, 0xFF, 0xD8};
     WriteSegment(JpegMarkerCode::ApplicationData8, segment.data(), segment.size());
 }
 

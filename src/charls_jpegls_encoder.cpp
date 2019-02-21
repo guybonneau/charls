@@ -13,6 +13,18 @@ using namespace charls;
 
 struct charls_jpegls_encoder
 {
+    void write_spiff_header(const charls_spiff_header& spiff_header, bool keep_open)
+    {
+        ByteStreamInfo destination;
+        JpegStreamWriter writer{destination};
+
+        writer.WriteSpiffHeaderSegment(spiff_header);
+        if (!keep_open)
+        {
+            writer.WriteSpiffEndOfDirectoryEntry();
+        }
+    }
+
     void encode()
     {
         if (width < 1 || width > 65535)
@@ -98,6 +110,21 @@ extern "C"
             encoder->source = source;
             encoder->source_size = source_size;
             encoder->encode();
+
+            return jpegls_errc::success;
+        }
+        catch (...)
+        {
+            return to_jpegls_errc();
+        }
+    }
+
+    charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
+    charls_jpegls_encoder_write_spiff_header(charls_jpegls_encoder* encoder, const charls_spiff_header* spiff_header, bool keep_open)
+    {
+        try
+        {
+            encoder->write_spiff_header(*spiff_header, keep_open);
 
             return jpegls_errc::success;
         }

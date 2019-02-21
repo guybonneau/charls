@@ -8,6 +8,7 @@
 extern "C" {
 #else
 #include <stddef.h>
+#include <stdbool.h>
 #endif
 
 typedef struct charls_jpegls_decoder charls_jpegls_decoder;
@@ -48,6 +49,10 @@ charls_jpegls_encoder_size(charls_jpegls_encoder* encoder, int32_t width, int32_
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
 charls_jpegls_encoder_encode_from_buffer(charls_jpegls_encoder* encoder, const void* source, size_t source_size);
+
+CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
+charls_jpegls_encoder_write_spiff_header(charls_jpegls_encoder* encoder, const charls_spiff_header* header, bool keep_open);
+
 
 
 /// <summary>

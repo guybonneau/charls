@@ -69,7 +69,7 @@ namespace CharLSUnitTest
             header.vertical_resolution = 96;
             header.horizontal_resolution = 1024;
 
-            writer.WriteSpiffSegment(header);
+            writer.WriteSpiffHeaderSegment(header);
 
             Assert::AreEqual(static_cast<size_t>(34), writer.GetBytesWritten());
 
@@ -122,6 +122,36 @@ namespace CharLSUnitTest
             Assert::AreEqual(static_cast<uint8_t>(0), buffer[31]);
             Assert::AreEqual(static_cast<uint8_t>(4), buffer[32]);
             Assert::AreEqual(static_cast<uint8_t>(0), buffer[33]);
+        }
+
+        TEST_METHOD(WriteSpiffEndOfDirectorySegment)
+        {
+            array<uint8_t, 10> buffer{};
+            const ByteStreamInfo info = FromByteArray(buffer.data(), buffer.size());
+
+            JpegStreamWriter writer(info);
+
+            writer.WriteSpiffEndOfDirectoryEntry();
+
+            Assert::AreEqual(static_cast<size_t>(10), writer.GetBytesWritten());
+
+            // Verify Entry Magic Number (EMN)
+            Assert::AreEqual(static_cast<uint8_t>(0xFF), buffer[0]);
+            Assert::AreEqual(static_cast<uint8_t>(JpegMarkerCode::ApplicationData8), buffer[1]);
+
+            // Verify EOD Entry Length (EOD = End Of Directory)
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[2]);
+            Assert::AreEqual(static_cast<uint8_t>(8), buffer[3]);
+
+            // Verify EOD Tag
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[4]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[5]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[6]);
+            Assert::AreEqual(static_cast<uint8_t>(1), buffer[7]);
+
+            // Verify embedded SOI tag
+            Assert::AreEqual(static_cast<uint8_t>(0xFF), buffer[8]);
+            Assert::AreEqual(static_cast<uint8_t>(JpegMarkerCode::StartOfImage), buffer[9]);
         }
 
         TEST_METHOD(WriteJpegFileInterchangeFormatSegment)
