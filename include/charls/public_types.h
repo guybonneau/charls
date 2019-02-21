@@ -370,7 +370,7 @@ struct JlsRect
 };
 
 
-typedef struct charls_spiff_header
+struct charls_spiff_header
 {
     uint16_t version;                               // SPIFF version
     charls_spiff_profile_id profile_id;             // Application profile
@@ -383,7 +383,7 @@ typedef struct charls_spiff_header
     charls_spiff_resolution_units resolution_units; // Type of resolution units
     int32_t vertical_resolution;                    // Vertical resolution
     int32_t horizontal_resolution;                  // Horizontal resolution
-} charls_spiff_header;
+};
 
 
 /// <summary>
@@ -536,5 +536,8 @@ inline ByteStreamInfo FromByteArrayConst(const void* bytes, std::size_t count) n
     return FromByteArray(const_cast<void*>(bytes), count);
 }
 
+#else
+
+typedef struct charls_spiff_header charls_spiff_header;
 
 #endif

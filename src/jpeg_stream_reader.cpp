@@ -478,19 +478,17 @@ int JpegStreamReader::TryReadApplicationData8Segment(int32_t segmentSize, spiff_
     }
 
     if (segmentSize == 5)
-        return TryReadHPColorTransformSegment(segmentSize);
+        return TryReadHPColorTransformSegment();
 
     if (spiff_header && spiff_header_found && segmentSize > 31)
-        return TryReadSpiffHeaderSegment(segmentSize, spiff_header, *spiff_header_found);
+        return TryReadSpiffHeaderSegment(spiff_header, *spiff_header_found);
 
     return 0;
 }
 
 
-int JpegStreamReader::TryReadHPColorTransformSegment(int32_t segmentSize)
+int JpegStreamReader::TryReadHPColorTransformSegment()
 {
-    ASSERT(segmentSize == 5);
-
     vector<char> sourceTag;
     ReadNBytes(sourceTag, 4);
     if (strncmp(sourceTag.data(), "mrfx", 4) != 0)
@@ -527,10 +525,8 @@ EnumType enum_cast(uint8_t value)
     return static_cast<EnumType>(value);
 }
 
-int JpegStreamReader::TryReadSpiffHeaderSegment(int32_t segmentSize, charls_spiff_header* spiff_header, bool& spiff_header_found)
+int JpegStreamReader::TryReadSpiffHeaderSegment(charls_spiff_header* spiff_header, bool& spiff_header_found)
 {
-    ASSERT(segmentSize > 31);
-
     vector<char> sourceTag;
     ReadNBytes(sourceTag, 6);
     if (strncmp(sourceTag.data(), "SPIFF", 6) != 0)

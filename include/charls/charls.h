@@ -11,48 +11,50 @@ extern "C" {
 #include <stdbool.h>
 #endif
 
-typedef struct charls_jpegls_decoder charls_jpegls_decoder;
+struct charls_jpegls_decoder;
+struct charls_jpegls_encoder;
 
-CHARLS_API_IMPORT_EXPORT charls_jpegls_decoder* CHARLS_API_CALLING_CONVENTION
+#ifndef __cplusplus
+typedef struct charls_jpegls_decoder charls_jpegls_decoder_t;
+typedef struct charls_jpegls_encoder charls_jpegls_encoder_t;
+#endif
+
+CHARLS_API_IMPORT_EXPORT struct charls_jpegls_decoder* CHARLS_API_CALLING_CONVENTION
 charls_jpegls_decoder_create(void);
 
 CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
-charls_jpegls_decoder_destroy(charls_jpegls_decoder* decoder);
+charls_jpegls_decoder_destroy(struct charls_jpegls_decoder* decoder);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-charls_jpegls_decoder_source_buffer(charls_jpegls_decoder* decoder, const void* buffer, size_t size);
+charls_jpegls_decoder_source_buffer(struct charls_jpegls_decoder* decoder, const void* buffer, size_t size);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-charls_jpegls_decoder_read_spiff_header(charls_jpegls_decoder* decoder, void* header); // ok, not_present, not_valid
+charls_jpegls_decoder_read_spiff_header(struct charls_jpegls_decoder* decoder, void* header); // ok, not_present, not_valid
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-charls_jpegls_decoder_read_header(charls_jpegls_decoder* decoder);
+charls_jpegls_decoder_read_header(struct charls_jpegls_decoder* decoder);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-charls_jpegls_decoder_decode_to_buffer(charls_jpegls_decoder* decoder, void* buffer, size_t size);
+charls_jpegls_decoder_decode_to_buffer(struct charls_jpegls_decoder* decoder, void* buffer, size_t size);
 
 
-
-typedef struct charls_jpegls_encoder charls_jpegls_encoder;
-
-CHARLS_API_IMPORT_EXPORT charls_jpegls_encoder* CHARLS_API_CALLING_CONVENTION
+CHARLS_API_IMPORT_EXPORT struct charls_jpegls_encoder* CHARLS_API_CALLING_CONVENTION
 charls_jpegls_encoder_create(void);
 
 CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
-charls_jpegls_encoder_destroy(charls_jpegls_encoder* encoder);
+charls_jpegls_encoder_destroy(struct charls_jpegls_encoder* encoder);
 
 CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
-charls_jpegls_encoder_destination_buffer(charls_jpegls_encoder* encoder, void* buffer, size_t size);
+charls_jpegls_encoder_destination_buffer(struct charls_jpegls_encoder* encoder, void* buffer, size_t size);
 
 CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
-charls_jpegls_encoder_size(charls_jpegls_encoder* encoder, int32_t width, int32_t height);
+charls_jpegls_encoder_size(struct charls_jpegls_encoder* encoder, int32_t width, int32_t height);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-charls_jpegls_encoder_encode_from_buffer(charls_jpegls_encoder* encoder, const void* source, size_t source_size);
+charls_jpegls_encoder_encode_from_buffer(struct charls_jpegls_encoder* encoder, const void* source, size_t source_size);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-charls_jpegls_encoder_write_spiff_header(charls_jpegls_encoder* encoder, const charls_spiff_header* header, bool keep_open);
-
+charls_jpegls_encoder_write_spiff_header(struct charls_jpegls_encoder* encoder, const charls_spiff_header* header, bool keep_open);
 
 
 /// <summary>

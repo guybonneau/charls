@@ -58,9 +58,9 @@ private:
     int ReadPresetParametersSegment(int32_t segmentSize);
     void ReadJfif();
     int TryReadApplicationData8Segment(int32_t segmentSize, spiff_header* spiff_header, bool* spiff_header_found);
-    int TryReadSpiffHeaderSegment(int32_t segmentSize, spiff_header* spiff_header, bool& spiff_header_found);
+    int TryReadSpiffHeaderSegment(spiff_header* spiff_header, bool& spiff_header_found);
 
-    int TryReadHPColorTransformSegment(int32_t segmentSize);
+    int TryReadHPColorTransformSegment();
     void AddComponent(uint8_t componentId);
 
     enum class state
