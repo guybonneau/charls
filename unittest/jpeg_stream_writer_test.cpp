@@ -9,10 +9,7 @@
 
 using std::array;
 using Microsoft::VisualStudio::CppUnitTestFramework::Assert;
-using charls::JpegStreamWriter;
-using charls::JpegMarkerCode;
-using charls::ColorTransformation;
-using charls::InterleaveMode;
+using namespace charls;
 
 namespace CharLSUnitTest
 {
@@ -51,6 +48,80 @@ namespace CharLSUnitTest
             Assert::AreEqual(static_cast<size_t>(2), writer.GetBytesWritten());
             Assert::AreEqual(static_cast<uint8_t>(0xFF), buffer[0]);
             Assert::AreEqual(static_cast<uint8_t>(JpegMarkerCode::EndOfImage), buffer[1]);
+        }
+
+        TEST_METHOD(WriteSpiffSegment)
+        {
+            array<uint8_t, 34> buffer{};
+            const ByteStreamInfo info = FromByteArray(buffer.data(), buffer.size());
+
+            JpegStreamWriter writer(info);
+
+            spiff_header header{};
+            header.profile_id = spiff_profile_id::none;
+            header.component_count = 3;
+            header.height = 800;
+            header.width = 600;
+            header.color_space = spiff_color_space::rgb;
+            header.bits_per_sample = 8;
+            header.compression_type = spiff_compression_type::jpeg_ls;
+            header.resolution_units = spiff_resolution_units::dots_per_inch;
+            header.vertical_resolution = 96;
+            header.horizontal_resolution = 1024;
+
+            writer.WriteSpiffSegment(header);
+
+            Assert::AreEqual(static_cast<size_t>(34), writer.GetBytesWritten());
+
+            Assert::AreEqual(static_cast<uint8_t>(0xFF), buffer[0]);
+            Assert::AreEqual(static_cast<uint8_t>(JpegMarkerCode::ApplicationData8), buffer[1]);
+
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[2]);
+            Assert::AreEqual(static_cast<uint8_t>(32), buffer[3]);
+
+            // Verify SPIFF identifier string.
+            Assert::AreEqual(static_cast<uint8_t>('S'), buffer[4]);
+            Assert::AreEqual(static_cast<uint8_t>('P'), buffer[5]);
+            Assert::AreEqual(static_cast<uint8_t>('I'), buffer[6]);
+            Assert::AreEqual(static_cast<uint8_t>('F'), buffer[7]);
+            Assert::AreEqual(static_cast<uint8_t>('F'), buffer[8]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[9]);
+
+            // Verify version
+            Assert::AreEqual(static_cast<uint8_t>(1), buffer[10]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[11]);
+
+            Assert::AreEqual(static_cast<uint8_t>(header.profile_id), buffer[12]);
+            Assert::AreEqual(static_cast<uint8_t>(header.component_count), buffer[13]);
+
+            // Height
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[14]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[15]);
+            Assert::AreEqual(static_cast<uint8_t>(0x3), buffer[16]);
+            Assert::AreEqual(static_cast<uint8_t>(0x20), buffer[17]);
+
+            // Width
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[18]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[19]);
+            Assert::AreEqual(static_cast<uint8_t>(0x2), buffer[20]);
+            Assert::AreEqual(static_cast<uint8_t>(0x58), buffer[21]);
+
+            Assert::AreEqual(static_cast<uint8_t>(header.color_space), buffer[22]);
+            Assert::AreEqual(static_cast<uint8_t>(header.bits_per_sample), buffer[23]);
+            Assert::AreEqual(static_cast<uint8_t>(header.compression_type), buffer[24]);
+            Assert::AreEqual(static_cast<uint8_t>(header.resolution_units), buffer[25]);
+
+            // vertical_resolution
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[26]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[27]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[28]);
+            Assert::AreEqual(static_cast<uint8_t>(96), buffer[29]);
+
+            // header.horizontal_resolution = 1024;
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[30]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[31]);
+            Assert::AreEqual(static_cast<uint8_t>(4), buffer[32]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[33]);
         }
 
         TEST_METHOD(WriteJpegFileInterchangeFormatSegment)

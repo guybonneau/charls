@@ -22,6 +22,13 @@ public:
     void WriteStartOfImage();
 
     /// <summary>
+    /// Write a JPEG SPIFF (APP8 + spiff) segment.
+    /// This segment is documented in ISO/IEC 10918-3, Annex F.
+    /// </summary>
+    /// <param name="spiff_header">Header info to write into the SPIFF segment.</param>
+    void WriteSpiffSegment(const spiff_header& spiff_header);
+
+    /// <summary>
     /// Write a JPEG File Interchange (APP1 + jfif) segment.
     /// </summary>
     /// <param name="params">Parameters to write into the JFIF segment.</param>

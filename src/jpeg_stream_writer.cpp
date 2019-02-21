@@ -41,6 +41,30 @@ void JpegStreamWriter::WriteEndOfImage()
 }
 
 
+void JpegStreamWriter::WriteSpiffSegment(const spiff_header& spiff_header)
+{
+    ASSERT(spiff_header.height > 0);
+    ASSERT(spiff_header.width > 0);
+
+    // Create a JPEG APP8 segment in Still Picture Interchange File Format (SPIFF), v1.0
+    vector<uint8_t> segment{'S', 'P', 'I', 'F', 'F', '\0'};
+    segment.push_back(1);
+    segment.push_back(0);
+    segment.push_back(static_cast<uint8_t>(spiff_header.profile_id));
+    segment.push_back(spiff_header.component_count);
+    push_back(segment, static_cast<uint32_t>(spiff_header.height));
+    push_back(segment, static_cast<uint32_t>(spiff_header.width));
+    segment.push_back(static_cast<uint8_t>(spiff_header.color_space));
+    segment.push_back(spiff_header.bits_per_sample);
+    segment.push_back(static_cast<uint8_t>(spiff_header.compression_type));
+    segment.push_back(static_cast<uint8_t>(spiff_header.resolution_units));
+    push_back(segment, static_cast<uint32_t>(spiff_header.vertical_resolution));
+    push_back(segment, static_cast<uint32_t>(spiff_header.horizontal_resolution));
+
+    WriteSegment(JpegMarkerCode::ApplicationData8, segment.data(), segment.size());
+}
+
+
 void JpegStreamWriter::WriteJpegFileInterchangeFormatSegment(const JfifParameters& params)
 {
     ASSERT(params.units == 0 || params.units == 1 || params.units == 2);
