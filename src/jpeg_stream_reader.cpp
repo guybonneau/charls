@@ -97,7 +97,7 @@ void JpegStreamReader::ReadNBytes(std::vector<char>& destination, int byteCount)
 }
 
 
-void JpegStreamReader::ReadHeader(spiff_header* spiff_header, bool* spiff_header_found)
+void JpegStreamReader::ReadHeader(charls_spiff_header* spiff_header, bool* spiff_header_found)
 {
     if (state_ == state::created)
     {
@@ -219,7 +219,7 @@ void JpegStreamReader::ValidateMarkerCode(JpegMarkerCode markerCode) const
 }
 
 
-int JpegStreamReader::ReadMarkerSegment(JpegMarkerCode markerCode, int32_t segmentSize, spiff_header* spiff_header, bool* spiff_header_found)
+int JpegStreamReader::ReadMarkerSegment(JpegMarkerCode markerCode, int32_t segmentSize, charls_spiff_header* spiff_header, bool* spiff_header_found)
 {
     switch (markerCode)
     {
@@ -469,7 +469,7 @@ int32_t JpegStreamReader::ReadSegmentSize()
 }
 
 
-int JpegStreamReader::TryReadApplicationData8Segment(int32_t segmentSize, spiff_header* spiff_header, bool* spiff_header_found)
+int JpegStreamReader::TryReadApplicationData8Segment(int32_t segmentSize, charls_spiff_header* spiff_header, bool* spiff_header_found)
 {
     if (spiff_header_found)
     {

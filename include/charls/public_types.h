@@ -501,14 +501,6 @@ struct JlsParameters
 
 #ifdef __cplusplus
 
-namespace charls
-{
-
-using spiff_header = charls_spiff_header;
-
-}
-
-
 #include <iostream>
 
 

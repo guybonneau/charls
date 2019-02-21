@@ -57,7 +57,7 @@ namespace CharLSUnitTest
 
             JpegStreamWriter writer(info);
 
-            spiff_header header{};
+            charls_spiff_header header{};
             header.profile_id = spiff_profile_id::none;
             header.component_count = 3;
             header.height = 800;

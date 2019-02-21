@@ -26,7 +26,7 @@ public:
     /// This segment is documented in ISO/IEC 10918-3, Annex F.
     /// </summary>
     /// <param name="spiff_header">Header info to write into the SPIFF segment.</param>
-    void WriteSpiffHeaderSegment(const spiff_header& spiff_header);
+    void WriteSpiffHeaderSegment(const charls_spiff_header& spiff_header);
 
     /// <summary>
     /// Write a JPEG SPIFF end of directory (APP8) segment.

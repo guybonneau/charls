@@ -28,7 +28,7 @@ public:
     }
 
     void Read(ByteStreamInfo rawPixels);
-    void ReadHeader(spiff_header* spiff_header = nullptr, bool* spiff_header_found = nullptr);
+    void ReadHeader(charls_spiff_header* spiff_header = nullptr, bool* spiff_header_found = nullptr);
 
     void SetInfo(const JlsParameters& params) noexcept
     {
@@ -52,13 +52,13 @@ private:
     JpegMarkerCode ReadNextMarkerCode();
     void ValidateMarkerCode(JpegMarkerCode markerCode) const;
 
-    int ReadMarkerSegment(JpegMarkerCode markerCode, int32_t segmentSize, spiff_header* spiff_header, bool* spiff_header_found);
+    int ReadMarkerSegment(JpegMarkerCode markerCode, int32_t segmentSize, charls_spiff_header* spiff_header, bool* spiff_header_found);
     int ReadStartOfFrameSegment(int32_t segmentSize);
     static int ReadComment() noexcept;
     int ReadPresetParametersSegment(int32_t segmentSize);
     void ReadJfif();
-    int TryReadApplicationData8Segment(int32_t segmentSize, spiff_header* spiff_header, bool* spiff_header_found);
-    int TryReadSpiffHeaderSegment(spiff_header* spiff_header, bool& spiff_header_found);
+    int TryReadApplicationData8Segment(int32_t segmentSize, charls_spiff_header* spiff_header, bool* spiff_header_found);
+    int TryReadSpiffHeaderSegment(charls_spiff_header* spiff_header, bool& spiff_header_found);
 
     int TryReadHPColorTransformSegment();
     void AddComponent(uint8_t componentId);

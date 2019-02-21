@@ -41,7 +41,7 @@ void JpegStreamWriter::WriteEndOfImage()
 }
 
 
-void JpegStreamWriter::WriteSpiffHeaderSegment(const spiff_header& spiff_header)
+void JpegStreamWriter::WriteSpiffHeaderSegment(const charls_spiff_header& spiff_header)
 {
     ASSERT(spiff_header.height > 0);
     ASSERT(spiff_header.width > 0);
