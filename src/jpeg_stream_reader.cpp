@@ -104,7 +104,7 @@ void JpegStreamReader::ReadHeader(spiff_header* spiff_header, bool* spiff_header
         if (ReadNextMarkerCode() != JpegMarkerCode::StartOfImage)
             throw jpegls_error{jpegls_errc::start_of_image_marker_not_found};
 
-        state_ = state::header;
+        state_ = state::header_section;
     }
 
     for (;;)
@@ -114,7 +114,7 @@ void JpegStreamReader::ReadHeader(spiff_header* spiff_header, bool* spiff_header
 
         if (markerCode == JpegMarkerCode::StartOfScan)
         {
-            state_ = state::scan;
+            state_ = state::scan_section;
             return;
         }
 
@@ -122,7 +122,7 @@ void JpegStreamReader::ReadHeader(spiff_header* spiff_header, bool* spiff_header
         int bytesRead;
         switch (state_)
         {
-        case state::spiff_header:
+        case state::spiff_header_section:
             bytesRead = ReadMarkerSegment(markerCode, segmentSize - 2, nullptr, nullptr) + 2;
             break;
 
@@ -140,9 +140,9 @@ void JpegStreamReader::ReadHeader(spiff_header* spiff_header, bool* spiff_header
             ReadByte();
         }
 
-        if (state_ == state::header && spiff_header_found && *spiff_header_found)
+        if (state_ == state::header_section && spiff_header_found && *spiff_header_found)
         {
-            state_ = state::spiff_header;
+            state_ = state::spiff_header_section;
             return;
         }
     }

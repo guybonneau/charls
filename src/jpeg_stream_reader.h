@@ -66,11 +66,11 @@ private:
     enum class state
     {
         created,
-        header,
-        spiff_header,
-        image,
-        frame,
-        scan
+        header_section,
+        spiff_header_section,
+        image_section,
+        frame_section,
+        scan_section
     };
 
     ByteStreamInfo byteStream_;
