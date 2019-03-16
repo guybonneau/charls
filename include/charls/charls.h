@@ -35,7 +35,7 @@ CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
 charls_jpegls_decoder_read_header(struct charls_jpegls_decoder* decoder);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-charls_jpegls_decoder_decode_to_buffer(struct charls_jpegls_decoder* decoder, void* buffer, size_t size);
+charls_jpegls_decoder_decode_to_buffer(const struct charls_jpegls_decoder* decoder, void* buffer, size_t size);
 
 
 CHARLS_API_IMPORT_EXPORT struct charls_jpegls_encoder* CHARLS_API_CALLING_CONVENTION

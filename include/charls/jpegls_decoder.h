@@ -78,12 +78,12 @@ private:
         return decoder;
     }
 
-    static void destroy_decoder(charls_jpegls_decoder* decoder) noexcept
+    static void destroy_decoder(const charls_jpegls_decoder* decoder) noexcept
     {
         charls_jpegls_decoder_destroy(decoder);
     }
 
-    std::unique_ptr<charls_jpegls_decoder, void (*)(charls_jpegls_decoder*)> decoder_{create_decoder(), destroy_decoder};
+    std::unique_ptr<charls_jpegls_decoder, void (*)(const charls_jpegls_decoder*)> decoder_{create_decoder(), destroy_decoder};
     const void* source_{};
     size_t source_size_bytes_{};
     JlsParameters params_{};

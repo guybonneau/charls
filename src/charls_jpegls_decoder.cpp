@@ -111,7 +111,7 @@ extern "C"
     }
 
     jpegls_errc CHARLS_API_CALLING_CONVENTION
-    charls_jpegls_decoder_decode_to_buffer(charls_jpegls_decoder* decoder, void* buffer, size_t size)
+    charls_jpegls_decoder_decode_to_buffer(const charls_jpegls_decoder* decoder, void* buffer, size_t size)
     {
         try
         {
