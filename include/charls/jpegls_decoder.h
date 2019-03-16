@@ -3,7 +3,6 @@
 #include "charls.h"
 
 #include <cstddef>
-#include <vector>
 
 // WARNING: THESE CLASSES ARE NOT FINAL AND THEIR DESIGN AND API MAY CHANGE
 

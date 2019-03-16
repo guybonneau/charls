@@ -17,11 +17,6 @@ using std::vector;
 
 namespace charls
 {
-JpegStreamWriter::JpegStreamWriter() noexcept
-    : destination_{}
-{
-}
-
 
 JpegStreamWriter::JpegStreamWriter(const ByteStreamInfo& destination) noexcept
     : destination_{destination}
@@ -77,10 +72,10 @@ void JpegStreamWriter::WriteSpiffDirectoryEntry(int32_t entry_tag, const void* e
 void JpegStreamWriter::WriteSpiffEndOfDirectoryEntry()
 {
     // Note: ISO/IEC 10918-3, Annex F.2.2.3 documents that the EOD entry segment should have a length of 8
-    // but only 6 data bytes. This approach allows to postfix existing bitstreams\encoders with a SPIFF header.
+    // but only 6 data bytes. This approach allows to wrap existing bit streams\encoders with a SPIFF header.
     // In this implementation the SOI marker is added as data bytes to simplify the design.
 
-    array<uint8_t, 6> segment{0, 0, 0, 1, 0xFF, 0xD8};
+    array<uint8_t, 6> segment{0, 0, 0, 1, 0xFF, static_cast<uint8_t>(JpegMarkerCode::StartOfImage)};
     WriteSegment(JpegMarkerCode::ApplicationData8, segment.data(), segment.size());
 }
 

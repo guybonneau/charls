@@ -4,7 +4,7 @@
 
 namespace charls {
 
-class jpegls_category_t : public std::error_category
+class jpegls_category final : public std::error_category
 {
 public:
     const char* name() const noexcept override
@@ -24,7 +24,7 @@ using namespace charls;
 
 const void* CHARLS_API_CALLING_CONVENTION charls_jpegls_category()
 {
-    static jpegls_category_t instance;
+    static class jpegls_category instance;
     return &instance;
 }
 

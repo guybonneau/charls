@@ -75,7 +75,7 @@ struct charls_jpegls_encoder
     int32_t bits_per_sample{};
     int32_t component_count{};
     int32_t near_lossless{};
-    ColorTransformation color_transformation;
+    ColorTransformation color_transformation{};
     JpegLSPresetCodingParameters custom_preset_coding_parameters{};
 
     const void* source{};
@@ -105,7 +105,7 @@ extern "C"
     }
 
     void CHARLS_API_CALLING_CONVENTION
-    charls_jpegls_encoder_destroy(charls_jpegls_encoder* encoder)
+    charls_jpegls_encoder_destroy(const charls_jpegls_encoder* encoder)
     {
         MSVC_WARNING_SUPPRESS(26401 26409) // don't use new and delete + non-owner.
         delete encoder;

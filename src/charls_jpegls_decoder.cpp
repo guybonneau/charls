@@ -33,7 +33,7 @@ struct charls_jpegls_decoder
         reader_->ReadStartOfScan(true);
     }
 
-    void decode_to_buffer(void* buffer, size_t size)
+    void decode_to_buffer(void* buffer, size_t size) const
     {
         if (!reader_)
             throw jpegls_error{jpegls_errc::invalid_operation};
@@ -62,7 +62,7 @@ extern "C"
     }
 
     void CHARLS_API_CALLING_CONVENTION
-    charls_jpegls_decoder_destroy(charls_jpegls_decoder* decoder)
+    charls_jpegls_decoder_destroy(const charls_jpegls_decoder* decoder)
     {
         MSVC_WARNING_SUPPRESS(26401 26409) // don't use new and delete + non-owner.
         delete decoder;

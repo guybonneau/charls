@@ -16,7 +16,7 @@ enum class JpegMarkerCode : uint8_t;
 class JpegStreamWriter final
 {
 public:
-    JpegStreamWriter() noexcept;
+    JpegStreamWriter() = default;
     explicit JpegStreamWriter(const ByteStreamInfo& destination) noexcept;
 
     void WriteStartOfImage();
@@ -28,13 +28,12 @@ public:
     /// <param name="spiff_header">Header info to write into the SPIFF segment.</param>
     void WriteSpiffHeaderSegment(const charls_spiff_header& spiff_header);
 
-    void WriteSpiffDirectoryEntry(int32_t tag, const void* entry_data, size_t entry_data_size);
+    void WriteSpiffDirectoryEntry(int32_t entry_tag, const void* entry_data, size_t entry_data_size);
 
     /// <summary>
     /// Write a JPEG SPIFF end of directory (APP8) segment.
     /// This segment is documented in ISO/IEC 10918-3, Annex F.
     /// </summary>
-    /// <param name="spiff_header">Header info to write into the SPIFF segment.</param>
     void WriteSpiffEndOfDirectoryEntry();
 
     /// <summary>
@@ -161,7 +160,7 @@ private:
         WriteByte(static_cast<uint8_t>(markerCode));
     }
 
-    ByteStreamInfo destination_;
+    ByteStreamInfo destination_{};
     std::size_t byteOffset_{};
     int8_t componentId_{1};
 };

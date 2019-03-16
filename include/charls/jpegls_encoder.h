@@ -50,7 +50,7 @@ public:
         return buffer;
     }
 
-    size_t encode(void* destination, const size_t destination_size_bytes)
+    size_t encode(void* destination, const size_t destination_size_bytes) const
     {
         std::error_code error;
         const size_t final_size = encode(destination, destination_size_bytes, error);
@@ -60,7 +60,7 @@ public:
         return final_size;
     }
 
-    size_t encode(void* destination, const size_t destination_size_bytes, std::error_code& error) noexcept
+    size_t encode(void* destination, const size_t destination_size_bytes, std::error_code& error) const noexcept
     {
         size_t bytes_written;
         JlsParameters parameters
@@ -71,7 +71,9 @@ public:
             0,
             metadata_.component_count,
             allowed_lossy_error_,
-            interleave_mode_
+            interleave_mode_,
+            ColorTransformation::None,
+            0,
         };
 
         error = JpegLsEncode(destination, destination_size_bytes, &bytes_written,

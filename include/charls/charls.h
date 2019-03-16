@@ -23,7 +23,7 @@ CHARLS_API_IMPORT_EXPORT struct charls_jpegls_decoder* CHARLS_API_CALLING_CONVEN
 charls_jpegls_decoder_create(void);
 
 CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
-charls_jpegls_decoder_destroy(struct charls_jpegls_decoder* decoder);
+charls_jpegls_decoder_destroy(const struct charls_jpegls_decoder* decoder);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
 charls_jpegls_decoder_source_buffer(struct charls_jpegls_decoder* decoder, const void* buffer, size_t size);
@@ -42,13 +42,13 @@ CHARLS_API_IMPORT_EXPORT struct charls_jpegls_encoder* CHARLS_API_CALLING_CONVEN
 charls_jpegls_encoder_create_buffer(void* destination_buffer, size_t size);
 
 CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
-charls_jpegls_encoder_destroy(struct charls_jpegls_encoder* encoder);
+charls_jpegls_encoder_destroy(const struct charls_jpegls_encoder* encoder);
 
 CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
 charls_jpegls_encoder_size(struct charls_jpegls_encoder* encoder, int32_t width, int32_t height);
 
 CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
-charls_jpegls_encoder_near_lossless(struct charls_jpegls_encoder* encoder, int32_t near_losssless);
+charls_jpegls_encoder_near_lossless(struct charls_jpegls_encoder* encoder, int32_t near_lossless);
 
 CHARLS_API_IMPORT_EXPORT void CHARLS_API_CALLING_CONVENTION
 charls_jpegls_encoder_interleave_mode(struct charls_jpegls_encoder* encoder, CharlsInterleaveModeType mode);
@@ -57,7 +57,7 @@ CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
 charls_jpegls_encoder_encode_from_buffer(struct charls_jpegls_encoder* encoder, const void* source, size_t source_size);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-charls_jpegls_encoder_write_spiff_header(struct charls_jpegls_encoder* encoder, const charls_spiff_header* header);
+charls_jpegls_encoder_write_spiff_header(struct charls_jpegls_encoder* encoder, const charls_spiff_header* spiff_header);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
 charls_jpegls_encoder_write_spiff_entry(struct charls_jpegls_encoder* encoder, int32_t entry_tag, const void* entry_data, size_t entry_data_size);
