@@ -65,6 +65,15 @@ void JpegStreamWriter::WriteSpiffHeaderSegment(const charls_spiff_header& spiff_
 }
 
 
+void JpegStreamWriter::WriteSpiffDirectoryEntry(int32_t entry_tag, const void* entry_data, size_t entry_data_size)
+{
+    WriteMarker(JpegMarkerCode::ApplicationData8);
+    WriteUInt16(static_cast<uint16_t>(sizeof(uint16_t) + sizeof(uint32_t) + entry_data_size ));
+    WriteUInt32(entry_tag);
+    WriteBytes(entry_data, entry_data_size);
+}
+
+
 void JpegStreamWriter::WriteSpiffEndOfDirectoryEntry()
 {
     // Note: ISO/IEC 10918-3, Annex F.2.2.3 documents that the EOD entry segment should have a length of 8

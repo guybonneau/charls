@@ -16,7 +16,7 @@ struct charls_jpegls_decoder
     void source_buffer(const void* buffer, size_t size)
     {
         if (reader_)
-            throw jpegls_error{jpegls_errc::invalid_argument}; // TODO: invalid-state: or something like it.
+            throw jpegls_error{jpegls_errc::invalid_operation};
 
         source_buffer_ = buffer;
         size_ = size;
@@ -25,7 +25,7 @@ struct charls_jpegls_decoder
     void read_header()
     {
         if (reader_)
-            throw jpegls_error{jpegls_errc::invalid_argument}; // TODO: invalid-state: or something like it.
+            throw jpegls_error{jpegls_errc::invalid_operation};
 
         ByteStreamInfo source{FromByteArrayConst(source_buffer_, size_)};
         reader_ = std::make_unique<JpegStreamReader>(source);
@@ -36,19 +36,19 @@ struct charls_jpegls_decoder
     void decode_to_buffer(void* buffer, size_t size)
     {
         if (!reader_)
-            throw jpegls_error{jpegls_errc::invalid_argument}; // TODO: invalid-state: or something like it.
+            throw jpegls_error{jpegls_errc::invalid_operation};
 
         const ByteStreamInfo destination = FromByteArray(buffer, size);
         reader_->Read(destination);
     }
 
-    bool parse_tables;
-    bool parse_comments;
+    bool parse_tables{};
+    bool parse_comments{};
 
 private:
     std::unique_ptr<JpegStreamReader> reader_;
-    const void* source_buffer_;
-    size_t size_;
+    const void* source_buffer_{};
+    size_t size_{};
 };
 
 extern "C"

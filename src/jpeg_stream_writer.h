@@ -28,6 +28,8 @@ public:
     /// <param name="spiff_header">Header info to write into the SPIFF segment.</param>
     void WriteSpiffHeaderSegment(const charls_spiff_header& spiff_header);
 
+    void WriteSpiffDirectoryEntry(int32_t tag, const void* entry_data, size_t entry_data_size);
+
     /// <summary>
     /// Write a JPEG SPIFF end of directory (APP8) segment.
     /// This segment is documented in ISO/IEC 10918-3, Annex F.
@@ -143,6 +145,14 @@ private:
     {
         WriteByte(static_cast<uint8_t>(value / 0x100));
         WriteByte(static_cast<uint8_t>(value % 0x100));
+    }
+
+    void WriteUInt32(uint32_t value)
+    {
+        WriteByte(static_cast<uint8_t>(value >> 24));
+        WriteByte(static_cast<uint8_t>(value >> 16));
+        WriteByte(static_cast<uint8_t>(value >> 8));
+        WriteByte(static_cast<uint8_t>(value));
     }
 
     void WriteMarker(JpegMarkerCode markerCode)

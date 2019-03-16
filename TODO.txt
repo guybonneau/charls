@@ -1,0 +1,16 @@
+
+TODO:
+
+* unit tests for WriteSpiffDirectoryEntry();
+
+* Unit test charls_encoder
+
+* document public enums and new APIs
+
+DONE:
+
+* error code invalid state
+* implement WriteSpiffDirectoryEntry();
+* charls_jpegls_encoder_create => charls_jpegls_encoder_create_buffer
+* charls_jpegls_encoder_add_spiff_entry =>
+

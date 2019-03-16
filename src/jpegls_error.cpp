@@ -62,6 +62,9 @@ const char* CHARLS_API_CALLING_CONVENTION charls_get_error_message(int32_t error
     case jpegls_errc::invalid_argument_thumbnail:
         return "The arguments for the thumbnail and the dimensions don't match";
 
+    case jpegls_errc::invalid_argument_spiff_entry_size:
+        return "The argument for the entry size parameter is outside the range [0, 65528]";
+
     case jpegls_errc::start_of_image_marker_not_found:
         return "Invalid JPEG-LS stream, first JPEG marker is not a Start Of Image (SOI) marker";
 
@@ -88,6 +91,9 @@ const char* CHARLS_API_CALLING_CONVENTION charls_get_error_message(int32_t error
 
     case jpegls_errc::jpegls_preset_extended_parameter_type_not_supported:
         return "Unsupported JPEG-LS stream, JPEG-LS preset parameters segment contains an JPEG-LS Extended (ISO/IEC 14495-2) type";
+
+    case jpegls_errc::invalid_operation:
+        return "Method call is invalid for the current state";
 
     case jpegls_errc::invalid_parameter_bits_per_sample:
         return "Invalid JPEG-LS stream, The bit per sample (sample precision) parameter is not in the range [2, 16]";

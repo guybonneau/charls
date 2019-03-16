@@ -47,6 +47,7 @@ enum class jpegls_errc
     unexpected_end_of_image_marker = 21,                      // This error is returned when the stream contains an unexpected EOI marker.
     invalid_jpegls_preset_parameter_type = 22,                // This error is returned when the stream contains an invalid type parameter in the JPEG-LS segment.
     jpegls_preset_extended_parameter_type_not_supported = 23, // This error is returned when the stream contains an unsupported type parameter in the JPEG-LS segment.
+    invalid_operation = 24,                                   // This error is returned when a method call is invalid for the current state.
     invalid_argument_width = 100,                             // The argument for the width parameter is outside the range [1, 65535].
     invalid_argument_height = 101,                            // The argument for the height parameter is outside the range [1, 65535].
     invalid_argument_component_count = 102,                   // The argument for the component count parameter is outside the range [1, 255].
@@ -55,6 +56,7 @@ enum class jpegls_errc
     invalid_argument_destination = 105,                       // The destination buffer or stream is not set.
     invalid_argument_source = 106,                            // The source buffer or stream is not set.
     invalid_argument_thumbnail = 107,                         // The arguments for the thumbnail and the dimensions don't match.
+    invalid_argument_spiff_entry_size = 108,                  // The argument for the entry size parameter is outside the range [0, 65528].
     invalid_parameter_width = 200,                            // This error is returned when the stream contains a width parameter defined more then once or in an incompatible way.
     invalid_parameter_height = 201,                           // This error is returned when the stream contains a height parameter defined more then once in an incompatible way.
     invalid_parameter_component_count = 202,                  // This error is returned when the stream contains a component count parameter outside the range [1,255]
@@ -180,6 +182,26 @@ enum class spiff_resolution_units : uint8_t
     dots_per_centimeter = 2
 };
 
+// Official defined SPIFF tags defined in Table F.5 (ISO/IEC 10918-3)
+enum class spiff_entry_tag : uint32_t
+{
+    transfer_characteristics = 2,
+    component_registration = 3,
+    image_orientation = 4,
+    thumbnail = 5,
+    image_title = 6,
+    image_description = 7,
+    time_stamp = 8,
+    version_identifier = 9,
+    creator_identification = 10,
+    protection_indicator = 11,
+    copyright_information = 12,
+    contact_information = 13,
+    tile_index = 14,
+    scan_index = 15,
+    set_reference = 16
+};
+
 
 } // namespace charls
 
@@ -202,6 +224,7 @@ using charls_spiff_profile_id = charls::spiff_profile_id;
 using charls_spiff_color_space = charls::spiff_color_space;
 using charls_spiff_compression_type = charls::spiff_compression_type;
 using charls_spiff_resolution_units = charls::spiff_resolution_units;
+using charls_spiff_entry_tag = charls::spiff_entry_tag;
 
 #else
 
@@ -307,6 +330,25 @@ typedef enum charls_spiff_resolution_units
     CHARLS_SPIFF_RESOLUTION_UNITS_DOTS_PER_CENTIMETER = 2
 } charls_spiff_resolution_units;
 
+typedef enum charls_spiff_entry_tag
+{
+    CHARLS_SPIFF_ENTRY_TAG_TRANSFER_CHARACTERISTICS = 2,
+    CHARLS_SPIFF_ENTRY_TAG_COMPONENT_REGISTRATION = 3,
+    CHARLS_SPIFF_ENTRY_TAG_IMAGE_ORIENTATION = 4,
+    CHARLS_SPIFF_ENTRY_TAG_THUMBNAIL = 5,
+    CHARLS_SPIFF_ENTRY_TAG_IMAGE_TITLE = 6,
+    CHARLS_SPIFF_ENTRY_TAG_IMAGE_DESCRIPTION = 7,
+    CHARLS_SPIFF_ENTRY_TAG_TIME_STAMP = 8,
+    CHARLS_SPIFF_ENTRY_TAG_VERSION_IDENTIFIER = 9,
+    CHARLS_SPIFF_ENTRY_TAG_CREATOR_IDENTIFICATION = 10,
+    CHARLS_SPIFF_ENTRY_TAG_PROTECTION_INDICATOR = 11,
+    CHARLS_SPIFF_ENTRY_TAG_COPYRIGHT_INFORMATION = 12,
+    CHARLS_SPIFF_ENTRY_TAG_CONTACT_INFORMATION = 13,
+    CHARLS_SPIFF_ENTRY_TAG_TILE_INDEX = 14,
+    CHARLS_SPIFF_ENTRY_TAG_SCAN_INDEX = 15,
+    CHARLS_SPIFF_ENTRY_TAG_SET_REFERENCE = 16
+} charls_spiff_entry_tag;
+
 
 typedef enum CharlsApiResult charls_jpegls_errc;
 
@@ -323,7 +365,7 @@ typedef struct charls_frame_info
     int32_t height;
     int32_t bits_per_sample;
     int32_t component_count;
-} charls_metadata;
+} charls_frame_info;
 
 
 /// <summary>

@@ -14,6 +14,8 @@ constexpr int DefaultThreshold3 = 21; // BASIC_T3
 
 constexpr int DefaultResetValue = 64; // Default RESET value as defined in  ISO/IEC 14495-1, table C.2
 
+constexpr int maximum_width = 65535;
+constexpr int maximum_height = 65535;
 constexpr int MaximumComponentCount = 255;
 constexpr int MinimumBitsPerSample = 2;
 constexpr int MaximumBitsPerSample = 16;
