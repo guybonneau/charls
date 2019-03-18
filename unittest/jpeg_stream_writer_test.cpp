@@ -154,6 +154,36 @@ namespace CharLSUnitTest
             Assert::AreEqual(static_cast<uint8_t>(JpegMarkerCode::StartOfImage), buffer[9]);
         }
 
+        TEST_METHOD(WriteSpiffDirectoryEntry)
+        {
+            array<uint8_t, 10> buffer{};
+            const ByteStreamInfo info = FromByteArray(buffer.data(), buffer.size());
+
+            JpegStreamWriter writer{info};
+
+            array<uint8_t, 2> data{0x77, 0x66};
+
+            writer.WriteSpiffDirectoryEntry(2, data.data(), data.size());
+
+            // Verify Entry Magic Number (EMN)
+            Assert::AreEqual(static_cast<uint8_t>(0xFF), buffer[0]);
+            Assert::AreEqual(static_cast<uint8_t>(JpegMarkerCode::ApplicationData8), buffer[1]);
+
+            // Verify Entry Length
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[2]);
+            Assert::AreEqual(static_cast<uint8_t>(8), buffer[3]);
+
+            // Verify Entry Tag
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[4]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[5]);
+            Assert::AreEqual(static_cast<uint8_t>(0), buffer[6]);
+            Assert::AreEqual(static_cast<uint8_t>(2), buffer[7]);
+
+            // Verify embedded data
+            Assert::AreEqual(data[0], buffer[8]);
+            Assert::AreEqual(data[1], buffer[9]);
+        }
+
         TEST_METHOD(WriteJpegFileInterchangeFormatSegment)
         {
             array<uint8_t, 18> buffer{};
@@ -291,13 +321,7 @@ namespace CharLSUnitTest
 
         TEST_METHOD(WriteJpegLSExtendedParametersMarkerAndSerialize)
         {
-            JpegLSPresetCodingParameters params{};
-
-            params.MaximumSampleValue = 2;
-            params.Threshold1 = 1;
-            params.Threshold2 = 2;
-            params.Threshold3 = 3;
-            params.ResetValue = 7;
+            const JpegLSPresetCodingParameters params{2, 1, 2, 3, 7};
 
             array<uint8_t, 15> buffer{};
             const ByteStreamInfo info = FromByteArray(buffer.data(), buffer.size());
