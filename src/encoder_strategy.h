@@ -72,7 +72,7 @@ protected:
         ASSERT(bitCount < 32 && bitCount >= 0);
         ASSERT((!decoder_) || (bitCount == 0 && bits == 0) ||( decoder_->ReadLongValue(bitCount) == bits));
 #ifndef NDEBUG
-        const int mask = (1u << (bitCount)) - 1;
+        const int mask = (1U << (bitCount)) - 1;
         ASSERT((bits | mask) == mask); // Not used bits must be set to zero.
 #endif
 

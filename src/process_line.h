@@ -73,14 +73,14 @@ private:
 
 inline void ByteSwap(void* data, int count)
 {
-    if (static_cast<unsigned int>(count) & 1u)
+    if (static_cast<unsigned int>(count) & 1U)
         throw jpegls_error{jpegls_errc::invalid_encoded_data};
 
     const auto data32 = static_cast<unsigned int*>(data);
     for(auto i = 0; i < count / 4; i++)
     {
         const auto value = data32[i];
-        data32[i] = ((value >> 8u) & 0x00FF00FFu) | ((value & 0x00FF00FFu) << 8u);
+        data32[i] = ((value >> 8U) & 0x00FF00FFU) | ((value & 0x00FF00FFU) << 8U);
     }
 
     const auto data8 = static_cast<unsigned char*>(data);

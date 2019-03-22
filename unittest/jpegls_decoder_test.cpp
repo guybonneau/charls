@@ -31,7 +31,7 @@ public:
         decoder.read_header();
     }
 
-    vector<uint8_t> read_file(const char* filename)
+    static vector<uint8_t> read_file(const char* filename)
     {
         FILE* file = fopen(filename, "rb");
         if (!file)

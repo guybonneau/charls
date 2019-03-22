@@ -43,7 +43,7 @@ signed char QuantizeGradientOrg(const JpegLSPresetCodingParameters& preset, int3
 
 vector<signed char> CreateQLutLossless(int32_t bitCount)
 {
-    const JpegLSPresetCodingParameters preset = charls::ComputeDefault((1u << static_cast<uint32_t>(bitCount)) - 1, 0);
+    const JpegLSPresetCodingParameters preset = charls::ComputeDefault((1U << static_cast<uint32_t>(bitCount)) - 1, 0);
     const int32_t range = preset.MaximumSampleValue + 1;
 
     vector<signed char> lut(static_cast<size_t>(range) * 2);
@@ -144,14 +144,14 @@ unique_ptr<Strategy> JlsCodecFactory<Strategy>::CreateOptimizedCodec(const JlsPa
 
 #endif
 
-    const int maxval = (1u << static_cast<unsigned int>(params.bitsPerSample)) - 1;
+    const int maxval = (1U << static_cast<unsigned int>(params.bitsPerSample)) - 1;
 
     if (params.bitsPerSample <= 8)
     {
         if (params.interleaveMode == InterleaveMode::Sample)
             return create_codec<Strategy>(DefaultTraits<uint8_t, Triplet<uint8_t> >(maxval, params.allowedLossyError), params);
 
-        return create_codec<Strategy>(DefaultTraits<uint8_t, uint8_t>((1u << params.bitsPerSample) - 1, params.allowedLossyError), params);
+        return create_codec<Strategy>(DefaultTraits<uint8_t, uint8_t>((1U << params.bitsPerSample) - 1, params.allowedLossyError), params);
     }
     if (params.bitsPerSample <= 16)
     {

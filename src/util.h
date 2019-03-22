@@ -180,7 +180,7 @@ struct FromBigEndian<4> final
 {
     FORCE_INLINE static unsigned int Read(const uint8_t* buffer) noexcept
     {
-        return (buffer[0] << 24u) + (buffer[1] << 16u) + (buffer[2] << 8u) + (buffer[3] << 0u);
+        return (buffer[0] << 24U) + (buffer[1] << 16U) + (buffer[2] << 8U) + (buffer[3] << 0U);
     }
 };
 
@@ -190,10 +190,10 @@ struct FromBigEndian<8> final
 {
     FORCE_INLINE static uint64_t Read(const uint8_t* buffer) noexcept
     {
-        return (static_cast<uint64_t>(buffer[0]) << 56u) + (static_cast<uint64_t>(buffer[1]) << 48u) +
-               (static_cast<uint64_t>(buffer[2]) << 40u) + (static_cast<uint64_t>(buffer[3]) << 32u) +
-               (static_cast<uint64_t>(buffer[4]) << 24u) + (static_cast<uint64_t>(buffer[5]) << 16u) +
-               (static_cast<uint64_t>(buffer[6]) <<  8u) + (static_cast<uint64_t>(buffer[7]) << 0u);
+        return (static_cast<uint64_t>(buffer[0]) << 56U) + (static_cast<uint64_t>(buffer[1]) << 48U) +
+               (static_cast<uint64_t>(buffer[2]) << 40U) + (static_cast<uint64_t>(buffer[3]) << 32U) +
+               (static_cast<uint64_t>(buffer[4]) << 24U) + (static_cast<uint64_t>(buffer[5]) << 16U) +
+               (static_cast<uint64_t>(buffer[6]) <<  8U) + (static_cast<uint64_t>(buffer[7]) << 0U);
     }
 };
 
