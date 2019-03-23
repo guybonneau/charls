@@ -101,7 +101,7 @@ static void* encode_bmp_to_jpegls(const void* pixel_data, size_t pixel_data_size
 
     struct JlsParameters params =
     {
-        .interleaveMode = CHARLS_IM_SAMPLE,
+        .interleaveMode = CHARLS_INTERLEAVE_MODE_SAMPLE,
         .bitsPerSample = 8,
         .components = 3
     };

@@ -92,9 +92,6 @@ const char* CHARLS_API_CALLING_CONVENTION charls_get_error_message(int32_t error
     case jpegls_errc::jpegls_preset_extended_parameter_type_not_supported:
         return "Unsupported JPEG-LS stream, JPEG-LS preset parameters segment contains an JPEG-LS Extended (ISO/IEC 14495-2) type";
 
-    case jpegls_errc::invalid_operation:
-        return "Method call is invalid for the current state";
-
     case jpegls_errc::invalid_parameter_bits_per_sample:
         return "Invalid JPEG-LS stream, The bit per sample (sample precision) parameter is not in the range [2, 16]";
 
@@ -112,6 +109,9 @@ const char* CHARLS_API_CALLING_CONVENTION charls_get_error_message(int32_t error
 
     case jpegls_errc::too_much_encoded_data:
         return "Invalid JPEG-LS stream, the decoding process is ready but the source buffer still contains encoded data";
+
+    case jpegls_errc::invalid_operation:
+        return "Method call is invalid for the current state";
 
     case jpegls_errc::bit_depth_for_transform_not_supported:
         return "The bit depth for the transformation is not supported";

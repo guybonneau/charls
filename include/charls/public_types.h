@@ -3,235 +3,15 @@
 #pragma once
 
 #ifdef __cplusplus
-
-#include <cstddef>
-#include <cstdint>
-#include <system_error>
-
-
-// GCC 5.0 cannot handle [[deprecated]] on enum values
-#if defined(__GNUC__) && !defined(__clang__)
-#define CHARLS_ENUM_DEPRECATED
-#else
-#define CHARLS_ENUM_DEPRECATED [[deprecated]]
-#endif
-
-
 namespace charls
 {
-/// <summary>
-/// Defines the result values that are returned by the CharLS API functions.
-/// </summary>
-enum class jpegls_errc
+namespace impl
 {
-    success = 0,                                              // The operation completed without errors.
-    invalid_argument = 1,                                     // This error is returned when one of the arguments is invalid and no specific reason is available.
-    parameter_value_not_supported = 2,                        // This error is returned when the JPEG stream contains a parameter value that is not supported by this implementation.
-    destination_buffer_too_small = 3,                         // The destination buffer is too small to hold all the output.
-    source_buffer_too_small = 4,                              // The source buffer is too small, more input data was expected.
-    invalid_encoded_data = 5,                                 // This error is returned when the encoded bit stream contains a general structural problem.
-    too_much_encoded_data = 6,                                // Too much compressed data.The decoding process is ready but the input buffer still contains encoded data.
-    bit_depth_for_transform_not_supported = 8,                // The bit depth for transformation is not supported.
-    color_transform_not_supported = 9,                        // The color transform is not supported.
-    encoding_not_supported = 10,                              // This error is returned when an encoded frame is found that is not encoded with the JPEG-LS algorithm.
-    unknown_jpeg_marker_found = 11,                           // This error is returned when an unknown JPEG marker code is found in the encoded bit stream.
-    jpeg_marker_start_byte_not_found = 12,                    // This error is returned when the algorithm expect a 0xFF code (indicates start of a JPEG marker) but none was found.
-    not_enough_memory = 13,                                   // This error is returned when the implementation could not allocate memory for its internal buffers.
-    unexpected_failure = 14,                                  // This error is returned when the implementation encountered a failure it didn't expect. No guarantees can be given for the state after this error.
-    start_of_image_marker_not_found = 15,                     // This error is returned when the first JPEG marker is not the SOI marker.
-    start_of_frame_marker_not_found = 16,                     // This error is returned when the SOF JPEG marker is not found before the SOS marker.
-    invalid_marker_segment_size = 17,                         // This error is returned when the segment size of a marker segment is invalid.
-    duplicate_start_of_image_marker = 18,                     // This error is returned when the stream contains more then one SOI marker.
-    duplicate_start_of_frame_marker = 19,                     // This error is returned when the stream contains more then one SOF marker.
-    duplicate_component_id_in_sof_segment = 20,               // This error is returned when the stream contains duplicate component identifiers in the SOF segment.
-    unexpected_end_of_image_marker = 21,                      // This error is returned when the stream contains an unexpected EOI marker.
-    invalid_jpegls_preset_parameter_type = 22,                // This error is returned when the stream contains an invalid type parameter in the JPEG-LS segment.
-    jpegls_preset_extended_parameter_type_not_supported = 23, // This error is returned when the stream contains an unsupported type parameter in the JPEG-LS segment.
-    invalid_operation = 24,                                   // This error is returned when a method call is invalid for the current state.
-    invalid_argument_width = 100,                             // The argument for the width parameter is outside the range [1, 65535].
-    invalid_argument_height = 101,                            // The argument for the height parameter is outside the range [1, 65535].
-    invalid_argument_component_count = 102,                   // The argument for the component count parameter is outside the range [1, 255].
-    invalid_argument_bits_per_sample = 103,                   // The argument for the bit per sample parameter is outside the range [2, 16].
-    invalid_argument_interleave_mode = 104,                   // The argument for the interleave mode is not (None, Sample, Line) or invalid in combination with component count.
-    invalid_argument_destination = 105,                       // The destination buffer or stream is not set.
-    invalid_argument_source = 106,                            // The source buffer or stream is not set.
-    invalid_argument_thumbnail = 107,                         // The arguments for the thumbnail and the dimensions don't match.
-    invalid_argument_spiff_entry_size = 108,                  // The argument for the entry size parameter is outside the range [0, 65528].
-    invalid_parameter_width = 200,                            // This error is returned when the stream contains a width parameter defined more then once or in an incompatible way.
-    invalid_parameter_height = 201,                           // This error is returned when the stream contains a height parameter defined more then once in an incompatible way.
-    invalid_parameter_component_count = 202,                  // This error is returned when the stream contains a component count parameter outside the range [1,255]
-    invalid_parameter_bits_per_sample = 203,                  // This error is returned when the stream contains a bits per sample (sample precision) parameter outside the range [2,16]
-    invalid_parameter_interleave_mode = 204,                  // This error is returned when the stream contains an interleave mode (ILV) parameter outside the range [0, 2]
+#endif
 
-    // Legacy enum names, will be removed in a future release.
-    OK CHARLS_ENUM_DEPRECATED = success,
-    InvalidJlsParameters CHARLS_ENUM_DEPRECATED = invalid_argument,
-    ParameterValueNotSupported CHARLS_ENUM_DEPRECATED = invalid_encoded_data,
-    UncompressedBufferTooSmall CHARLS_ENUM_DEPRECATED = destination_buffer_too_small,
-    CompressedBufferTooSmall CHARLS_ENUM_DEPRECATED = source_buffer_too_small,
-    InvalidCompressedData CHARLS_ENUM_DEPRECATED = invalid_encoded_data,
-    TooMuchCompressedData CHARLS_ENUM_DEPRECATED = too_much_encoded_data,
-    UnsupportedColorTransform CHARLS_ENUM_DEPRECATED = color_transform_not_supported,
-    UnsupportedEncoding CHARLS_ENUM_DEPRECATED = encoding_not_supported,
-    UnknownJpegMarker CHARLS_ENUM_DEPRECATED = unknown_jpeg_marker_found,
-    MissingJpegMarkerStart CHARLS_ENUM_DEPRECATED = jpeg_marker_start_byte_not_found,
-    UnexpectedFailure CHARLS_ENUM_DEPRECATED = unexpected_failure
-};
+// The following enum values are for C applications, for C++ the enum are defined after these definitions.
+// For the documentation, see the C++ enum definitions.
 
-[[deprecated]] typedef jpegls_errc ApiResult;
-
-/// <summary>
-/// Defines the interleave mode for multi-component (color) pixel data.
-/// </summary>
-enum class InterleaveMode
-{
-    /// <summary>
-    /// The data is encoded and stored as component for component: RRRGGGBBB.
-    /// </summary>
-    None = 0,
-
-    /// <summary>
-    /// The interleave mode is by line. A full line of each component is encoded before moving to the next line.
-    /// </summary>
-    Line = 1,
-
-    /// <summary>
-    /// The data is encoded and stored by sample. For color images this is the format like RGBRGBRGB.
-    /// </summary>
-    Sample = 2
-};
-
-/// <summary>
-/// Defines color space transformations as defined and implemented by the JPEG-LS library of HP Labs.
-/// These color space transformation decrease the correlation between the 3 color components, resulting in better encoding ratio.
-/// These options are only implemented for backwards compatibility and NOT part of the JPEG-LS standard.
-/// The JPEG-LS ISO/IEC 14495-1:1999 standard provides no capabilities to transport which color space transformation was used.
-/// </summary>
-enum class ColorTransformation
-{
-    /// <summary>
-    /// No color space transformation has been applied.
-    /// </summary>
-    None = 0,
-
-    /// <summary>
-    /// Defines the reversible lossless color transformation:
-    /// G = G
-    /// R = R - G
-    /// B = B - G
-    /// </summary>
-    HP1 = 1,
-
-    /// <summary>
-    /// Defines the reversible lossless color transformation:
-    /// G = G
-    /// B = B - (R + G) / 2
-    /// R = R - G
-    /// </summary>
-    HP2 = 2,
-
-    /// <summary>
-    /// Defines the reversible lossless color transformation of Y-Cb-Cr):
-    /// R = R - G
-    /// B = B - G
-    /// G = G + (R + B) / 4
-    /// </summary>
-    HP3 = 3,
-};
-
-enum class spiff_profile_id : uint8_t
-{
-    none = 0,
-    continuous_tone_base = 1,
-    continuous_tone_progressive = 2,
-    bi_level_facsimile = 3,
-    continuous_tone_facsimile = 4
-};
-
-enum class spiff_color_space : uint8_t
-{
-    bi_level = 0,
-    ycbcr_itu_bt_709_video = 1,
-    none = 2,
-    ycbcr_itu_bt_601_1_rgb = 3,
-    ycbcr_itu_bt_601_1_video = 4,
-    grayscale = 8,
-    photo_ycc = 9,
-    rgb = 10,
-    cmy = 11,
-    cmyk = 12,
-    ycck = 13,
-    cie_lab = 14
-};
-
-enum class spiff_compression_type : uint8_t
-{
-    uncompressed = 0,
-    modified_huffman = 1,
-    modified_read = 2,
-    modified_modified_read = 3,
-    jbig = 4,
-    jpeg = 5,
-    jpeg_ls = 6
-};
-
-enum class spiff_resolution_units : uint8_t
-{
-    aspect_ratio = 0,
-    dots_per_inch = 1,
-    dots_per_centimeter = 2
-};
-
-// Official defined SPIFF tags defined in Table F.5 (ISO/IEC 10918-3)
-enum class spiff_entry_tag : uint32_t
-{
-    transfer_characteristics = 2,
-    component_registration = 3,
-    image_orientation = 4,
-    thumbnail = 5,
-    image_title = 6,
-    image_description = 7,
-    time_stamp = 8,
-    version_identifier = 9,
-    creator_identification = 10,
-    protection_indicator = 11,
-    copyright_information = 12,
-    contact_information = 13,
-    tile_index = 14,
-    scan_index = 15,
-    set_reference = 16
-};
-
-
-} // namespace charls
-
-namespace std
-{
-template<>
-struct is_error_code_enum<charls::jpegls_errc> final : true_type
-{
-};
-
-} // namespace std
-
-using charls_jpegls_errc = charls::jpegls_errc;
-
-using CharlsApiResultType = charls::jpegls_errc;
-using CharlsInterleaveModeType = charls::InterleaveMode;
-using CharlsColorTransformationType = charls::ColorTransformation;
-
-using charls_spiff_profile_id = charls::spiff_profile_id;
-using charls_spiff_color_space = charls::spiff_color_space;
-using charls_spiff_compression_type = charls::spiff_compression_type;
-using charls_spiff_resolution_units = charls::spiff_resolution_units;
-using charls_spiff_entry_tag = charls::spiff_entry_tag;
-
-#else
-
-#include <stdint.h>
-
-// This API return code table is a copy of the C++ table. For additional info see the C++ table.
-// 2 tables are defined to prevent global namespace pollution.
 enum CharlsApiResult
 {
     CHARLS_API_RESULT_SUCCESS = 0,
@@ -241,7 +21,7 @@ enum CharlsApiResult
     CHARLS_API_RESULT_SOURCE_BUFFER_TOO_SMALL = 4,
     CHARLS_API_RESULT_INVALID_ENCODED_DATA = 5,
     CHARLS_API_RESULT_TOO_MUCH_ENCODED_DATA = 6,
-    CHARLS_API_RESULT_IMAGE_TYPE_NOT_SUPPORTED = 7,
+    CHARLS_API_RESULT_INVALID_OPERATION = 7,
     CHARLS_API_RESULT_BIT_DEPTH_FOR_TRANSFORM_NOT_SUPPORTED = 8,
     CHARLS_API_RESULT_COLOR_TRANSFORM_NOT_SUPPORTED = 9,
     CHARLS_API_RESULT_ENCODING_NOT_SUPPORTED = 10,
@@ -254,9 +34,10 @@ enum CharlsApiResult
     CHARLS_API_RESULT_INVALID_MARKER_SEGMENT_SIZE = 17,
     CHARLS_API_RESULT_DUPLICATE_START_OF_IMAGE_MARKER = 18,
     CHARLS_API_RESULT_DUPLICATE_START_OF_FRAME_MARKER = 19,
-    CHARLS_API_RESULT_UNEXPECTED_END_OF_IMAGE_MARKER = 20,
-    CHARLS_API_RESULT_INVALID_JPEGLS_PRESET_PARAMETER_TYPE = 21,
-    CHARLS_API_RESULT_JPEGLS_PRESET_EXTENDED_PARAMETER_TYPE_NOT_SUPPORTED = 22,
+    CHARLS_API_RESULT_DUPLICATE_COMPONENT_ID_IN_SOF_SEGMENT = 20,
+    CHARLS_API_RESULT_UNEXPECTED_END_OF_IMAGE_MARKER = 21,
+    CHARLS_API_RESULT_INVALID_JPEGLS_PRESET_PARAMETER_TYPE = 22,
+    CHARLS_API_RESULT_JPEGLS_PRESET_EXTENDED_PARAMETER_TYPE_NOT_SUPPORTED = 23,
     CHARLS_API_RESULT_INVALID_ARGUMENT_WIDTH = 100,
     CHARLS_API_RESULT_INVALID_ARGUMENT_HEIGHT = 101,
     CHARLS_API_RESULT_INVALID_ARGUMENT_COMPONENT_COUNT = 102,
@@ -265,6 +46,7 @@ enum CharlsApiResult
     CHARLS_API_RESULT_INVALID_ARGUMENT_DESTINATION = 105,
     CHARLS_API_RESULT_INVALID_ARGUMENT_SOURCE = 106,
     CHARLS_API_RESULT_INVALID_ARGUMENT_THUMBNAIL = 107,
+    CHARLS_API_RESULT_INVALID_ARGUMENT_SPIFF_ENTRY_SIZE = 108,
     CHARLS_API_RESULT_INVALID_PARAMETER_WIDTH = 200,
     CHARLS_API_RESULT_INVALID_PARAMETER_HEIGHT = 201,
     CHARLS_API_RESULT_INVALID_PARAMETER_COMPONENT_COUNT = 202,
@@ -274,9 +56,9 @@ enum CharlsApiResult
 
 enum CharlsInterleaveMode
 {
-    CHARLS_IM_NONE = 0,
-    CHARLS_IM_LINE = 1,
-    CHARLS_IM_SAMPLE = 2
+    CHARLS_INTERLEAVE_MODE_NONE = 0,
+    CHARLS_INTERLEAVE_MODE_LINE = 1,
+    CHARLS_INTERLEAVE_MODE_SAMPLE = 2
 };
 
 enum CharlsColorTransformation
@@ -349,14 +131,414 @@ typedef enum charls_spiff_entry_tag
     CHARLS_SPIFF_ENTRY_TAG_SET_REFERENCE = 16
 } charls_spiff_entry_tag;
 
+#ifdef __cplusplus
+}
+}
+#endif
+
+
+#ifdef __cplusplus
+
+#include <cstddef>
+#include <cstdint>
+#include <system_error>
+
+
+// GCC 5.0 cannot handle [[deprecated]] on enum values
+#if defined(__GNUC__) && !defined(__clang__)
+#define CHARLS_ENUM_DEPRECATED
+#else
+#define CHARLS_ENUM_DEPRECATED [[deprecated]]
+#endif
+
+
+namespace charls
+{
+/// <summary>
+/// Defines the result values that are returned by the CharLS API functions.
+/// </summary>
+enum class jpegls_errc
+{
+    /// <summary>
+    /// The operation completed without errors.
+    /// </summary>
+    success = impl::CHARLS_API_RESULT_SUCCESS,
+
+    /// <summary>
+    /// This error is returned when one of the arguments is invalid and no specific reason is available.
+    /// </summary>
+    invalid_argument = impl::CHARLS_API_RESULT_INVALID_ARGUMENT,
+
+    /// <summary>
+    /// This error is returned when the JPEG stream contains a parameter value that is not supported by this implementation.
+    /// </summary>
+    parameter_value_not_supported = impl::CHARLS_API_RESULT_PARAMETER_VALUE_NOT_SUPPORTED,
+
+    /// <summary>
+    /// The destination buffer is too small to hold all the output.
+    /// </summary>
+    destination_buffer_too_small = impl::CHARLS_API_RESULT_DESTINATION_BUFFER_TOO_SMALL,
+
+    /// <summary>
+    /// The source buffer is too small, more input data was expected.
+    /// </summary>
+    source_buffer_too_small = impl::CHARLS_API_RESULT_SOURCE_BUFFER_TOO_SMALL,
+
+    /// <summary>
+    /// This error is returned when the encoded bit stream contains a general structural problem.
+    /// </summary>
+    invalid_encoded_data = impl::CHARLS_API_RESULT_INVALID_ENCODED_DATA,
+
+    /// <summary>
+    /// Too much compressed data.The decoding process is ready but the input buffer still contains encoded data.
+    /// </summary>
+    too_much_encoded_data = impl::CHARLS_API_RESULT_TOO_MUCH_ENCODED_DATA,
+
+    /// <summary>
+    /// This error is returned when a method call is invalid for the current state.
+    /// </summary>
+    invalid_operation = impl::CHARLS_API_RESULT_INVALID_OPERATION,
+
+    /// <summary>
+    /// The bit depth for transformation is not supported.
+    /// </summary>
+    bit_depth_for_transform_not_supported = impl::CHARLS_API_RESULT_BIT_DEPTH_FOR_TRANSFORM_NOT_SUPPORTED,
+
+    /// <summary>
+    /// The color transform is not supported.
+    /// </summary>
+    color_transform_not_supported = impl::CHARLS_API_RESULT_COLOR_TRANSFORM_NOT_SUPPORTED,
+
+    /// <summary>
+    /// This error is returned when an encoded frame is found that is not encoded with the JPEG-LS algorithm.
+    /// </summary>
+    encoding_not_supported = impl::CHARLS_API_RESULT_ENCODING_NOT_SUPPORTED,
+
+    /// <summary>
+    /// This error is returned when an unknown JPEG marker code is found in the encoded bit stream.
+    /// </summary>
+    unknown_jpeg_marker_found = impl::CHARLS_API_RESULT_UNKNOWN_JPEG_MARKER_FOUND,
+
+    /// <summary>
+    /// This error is returned when the algorithm expect a 0xFF code (indicates start of a JPEG marker) but none was found.
+    /// </summary>
+    jpeg_marker_start_byte_not_found = impl::CHARLS_API_RESULT_JPEG_MARKER_START_BYTE_NOT_FOUND,
+
+    /// <summary>
+    /// This error is returned when the implementation could not allocate memory for its internal buffers.
+    /// </summary>
+    not_enough_memory = impl::CHARLS_API_RESULT_NOT_ENOUGH_MEMORY,
+
+    /// <summary>
+    /// This error is returned when the implementation encountered a failure it did not expect. No guarantees can be given for the state after this error.
+    /// </summary>
+    unexpected_failure = impl::CHARLS_API_RESULT_UNEXPECTED_FAILURE,
+
+    /// <summary>
+    /// This error is returned when the first JPEG marker is not the SOI marker.
+    /// </summary>
+    start_of_image_marker_not_found = impl::CHARLS_API_RESULT_START_OF_IMAGE_MARKER_NOT_FOUND,
+
+    /// <summary>
+    /// This error is returned when the SOF JPEG marker is not found before the SOS marker.
+    /// </summary>
+    start_of_frame_marker_not_found = impl::CHARLS_API_RESULT_START_OF_FRAME_MARKER_NOT_FOUND,
+
+    /// <summary>
+    /// This error is returned when the segment size of a marker segment is invalid.
+    /// </summary>
+    invalid_marker_segment_size = impl::CHARLS_API_RESULT_INVALID_MARKER_SEGMENT_SIZE,
+
+    /// <summary>
+    /// This error is returned when the stream contains more then one SOI marker.
+    /// </summary>
+    duplicate_start_of_image_marker = impl::CHARLS_API_RESULT_DUPLICATE_START_OF_IMAGE_MARKER,
+
+    /// <summary>
+    /// This error is returned when the stream contains more then one SOF marker.
+    /// </summary>
+    duplicate_start_of_frame_marker = impl::CHARLS_API_RESULT_DUPLICATE_START_OF_FRAME_MARKER,
+
+    /// <summary>
+    /// This error is returned when the stream contains duplicate component identifiers in the SOF segment.
+    /// </summary>
+    duplicate_component_id_in_sof_segment = impl::CHARLS_API_RESULT_DUPLICATE_COMPONENT_ID_IN_SOF_SEGMENT,
+
+    /// <summary>
+    /// This error is returned when the stream contains an unexpected EOI marker.
+    /// </summary>
+    unexpected_end_of_image_marker = impl::CHARLS_API_RESULT_UNEXPECTED_END_OF_IMAGE_MARKER,
+
+    /// <summary>
+    /// This error is returned when the stream contains an invalid type parameter in the JPEG-LS segment.
+    /// </summary>
+    invalid_jpegls_preset_parameter_type = impl::CHARLS_API_RESULT_INVALID_JPEGLS_PRESET_PARAMETER_TYPE,
+
+    /// <summary>
+    /// This error is returned when the stream contains an unsupported type parameter in the JPEG-LS segment.
+    /// </summary>
+    jpegls_preset_extended_parameter_type_not_supported = impl::CHARLS_API_RESULT_JPEGLS_PRESET_EXTENDED_PARAMETER_TYPE_NOT_SUPPORTED,
+
+    /// <summary>
+    /// The argument for the width parameter is outside the range [1, 65535].
+    /// </summary>
+    invalid_argument_width = impl::CHARLS_API_RESULT_INVALID_ARGUMENT_WIDTH,
+
+    /// <summary>
+    /// The argument for the height parameter is outside the range [1, 65535].
+    /// </summary>
+    invalid_argument_height = impl::CHARLS_API_RESULT_INVALID_ARGUMENT_HEIGHT,
+
+    /// <summary>
+    /// The argument for the component count parameter is outside the range [1, 255].
+    /// </summary>
+    invalid_argument_component_count = impl::CHARLS_API_RESULT_INVALID_ARGUMENT_COMPONENT_COUNT,
+
+    /// <summary>
+    /// The argument for the bit per sample parameter is outside the range [2, 16].
+    /// </summary>
+    invalid_argument_bits_per_sample = impl::CHARLS_API_RESULT_INVALID_ARGUMENT_BITS_PER_SAMPLE,
+
+    /// <summary>
+    /// The argument for the interleave mode is not (None, Sample, Line) or invalid in combination with component count.
+    /// </summary>
+    invalid_argument_interleave_mode = impl::CHARLS_API_RESULT_INVALID_ARGUMENT_INTERLEAVE_MODE,
+
+    /// <summary>
+    /// The destination buffer or stream is not set.
+    /// </summary>
+    invalid_argument_destination = impl::CHARLS_API_RESULT_INVALID_ARGUMENT_DESTINATION,
+
+    /// <summary>
+    /// The source buffer or stream is not set.
+    /// </summary>
+    invalid_argument_source = impl::CHARLS_API_RESULT_INVALID_ARGUMENT_SOURCE,
+
+    /// <summary>
+    /// The arguments for the thumbnail and the dimensions don't match.
+    /// </summary>
+    invalid_argument_thumbnail = impl::CHARLS_API_RESULT_INVALID_ARGUMENT_THUMBNAIL,
+
+    /// <summary>
+    /// The argument for the entry size parameter is outside the range [0, 65528].
+    /// </summary>
+    invalid_argument_spiff_entry_size = impl::CHARLS_API_RESULT_INVALID_ARGUMENT_SPIFF_ENTRY_SIZE,
+
+    /// <summary>
+    /// This error is returned when the stream contains a width parameter defined more then once or in an incompatible way.
+    /// </summary>
+    invalid_parameter_width = impl::CHARLS_API_RESULT_INVALID_PARAMETER_WIDTH,
+
+    /// <summary>
+    /// This error is returned when the stream contains a height parameter defined more then once in an incompatible way.
+    /// </summary>
+    invalid_parameter_height = impl::CHARLS_API_RESULT_INVALID_PARAMETER_HEIGHT,
+
+    /// <summary>
+    /// This error is returned when the stream contains a component count parameter outside the range [1,255]
+    /// </summary>
+    invalid_parameter_component_count = impl::CHARLS_API_RESULT_INVALID_PARAMETER_COMPONENT_COUNT,
+
+    /// <summary>
+    /// This error is returned when the stream contains a bits per sample (sample precision) parameter outside the range [2,16]
+    /// </summary>
+    invalid_parameter_bits_per_sample = impl::CHARLS_API_RESULT_INVALID_PARAMETER_BITS_PER_SAMPLE,
+
+    /// <summary>
+    /// This error is returned when the stream contains an interleave mode (ILV) parameter outside the range [0, 2]
+    /// </summary>
+    invalid_parameter_interleave_mode = impl::CHARLS_API_RESULT_INVALID_PARAMETER_INTERLEAVE_MODE,
+
+    // Legacy enum names, will be removed in a future release.
+    OK CHARLS_ENUM_DEPRECATED = success,
+    InvalidJlsParameters CHARLS_ENUM_DEPRECATED = invalid_argument,
+    ParameterValueNotSupported CHARLS_ENUM_DEPRECATED = invalid_encoded_data,
+    UncompressedBufferTooSmall CHARLS_ENUM_DEPRECATED = destination_buffer_too_small,
+    CompressedBufferTooSmall CHARLS_ENUM_DEPRECATED = source_buffer_too_small,
+    InvalidCompressedData CHARLS_ENUM_DEPRECATED = invalid_encoded_data,
+    TooMuchCompressedData CHARLS_ENUM_DEPRECATED = too_much_encoded_data,
+    UnsupportedColorTransform CHARLS_ENUM_DEPRECATED = color_transform_not_supported,
+    UnsupportedEncoding CHARLS_ENUM_DEPRECATED = encoding_not_supported,
+    UnknownJpegMarker CHARLS_ENUM_DEPRECATED = unknown_jpeg_marker_found,
+    MissingJpegMarkerStart CHARLS_ENUM_DEPRECATED = jpeg_marker_start_byte_not_found,
+    UnexpectedFailure CHARLS_ENUM_DEPRECATED = unexpected_failure
+};
+
+[[deprecated]] typedef jpegls_errc ApiResult;
+
+/// <summary>
+/// Defines the interleave modes for multi-component (color) pixel data.
+/// </summary>
+enum class InterleaveMode
+{
+    /// <summary>
+    /// The data is encoded and stored as component for component: RRRGGGBBB.
+    /// </summary>
+    None = impl::CHARLS_INTERLEAVE_MODE_NONE,
+
+    /// <summary>
+    /// The interleave mode is by line. A full line of each component is encoded before moving to the next line.
+    /// </summary>
+    Line = impl::CHARLS_INTERLEAVE_MODE_LINE,
+
+    /// <summary>
+    /// The data is encoded and stored by sample. For RGB color images this is the format like RGBRGBRGB.
+    /// </summary>
+    Sample = impl::CHARLS_INTERLEAVE_MODE_SAMPLE
+};
+
+/// <summary>
+/// Defines color space transformations as defined and implemented by the JPEG-LS library of HP Labs.
+/// These color space transformation decrease the correlation between the 3 color components, resulting in better encoding ratio.
+/// These options are only implemented for backwards compatibility and NOT part of the JPEG-LS standard.
+/// The JPEG-LS ISO/IEC 14495-1:1999 standard provides no capabilities to transport which color space transformation was used.
+/// </summary>
+enum class ColorTransformation
+{
+    /// <summary>
+    /// No color space transformation has been applied.
+    /// </summary>
+    None = impl::CHARLS_COLOR_TRANSFORMATION_NONE,
+
+    /// <summary>
+    /// Defines the reversible lossless color transformation:
+    /// G = G
+    /// R = R - G
+    /// B = B - G
+    /// </summary>
+    HP1 = impl::CHARLS_COLOR_TRANSFORMATION_HP1,
+
+    /// <summary>
+    /// Defines the reversible lossless color transformation:
+    /// G = G
+    /// B = B - (R + G) / 2
+    /// R = R - G
+    /// </summary>
+    HP2 = impl::CHARLS_COLOR_TRANSFORMATION_HP2,
+
+    /// <summary>
+    /// Defines the reversible lossless color transformation of Y-Cb-Cr):
+    /// R = R - G
+    /// B = B - G
+    /// G = G + (R + B) / 4
+    /// </summary>
+    HP3 = impl::CHARLS_COLOR_TRANSFORMATION_HP3,
+};
+
+enum class spiff_profile_id : uint8_t
+{
+    none = impl::CHARLS_SPIFF_PROFILE_ID_NONE,
+    continuous_tone_base = impl::CHARLS_SPIFF_PROFILE_ID_CONTINUOUS_TONE_BASE,
+    continuous_tone_progressive = impl::CHARLS_SPIFF_PROFILE_ID_CONTINUOUS_TONE_PROGRESSIVE,
+    bi_level_facsimile = impl::CHARLS_SPIFF_PROFILE_ID_BI_LEVEL_FACSIMILE,
+    continuous_tone_facsimile = impl::CHARLS_SPIFF_PROFILE_ID_CONTINUOUS_TONE_FACSIMILE
+};
+
+enum class spiff_color_space : uint8_t
+{
+    bi_level = impl::CHARLS_SPIFF_COLOR_SPACE_BI_LEVEL,
+    ycbcr_itu_bt_709_video = impl::CHARLS_SPIFF_COLOR_SPACE_YCBCR_ITU_BT_709_VIDEO,
+    none = impl::CHARLS_SPIFF_COLOR_SPACE_NONE,
+    ycbcr_itu_bt_601_1_rgb = impl::CHARLS_SPIFF_COLOR_SPACE_YCBCR_ITU_BT_601_1_RGB,
+    ycbcr_itu_bt_601_1_video = impl::CHARLS_SPIFF_COLOR_SPACE_YCBCR_ITU_BT_601_1_VIDEO,
+    grayscale = impl::CHARLS_SPIFF_COLOR_SPACE_GRAYSCALE,
+    photo_ycc = impl::CHARLS_SPIFF_COLOR_SPACE_PHOTO_YCC,
+    rgb = impl::CHARLS_SPIFF_COLOR_SPACE_RGB,
+    cmy = impl::CHARLS_SPIFF_COLOR_SPACE_CMY,
+    cmyk = impl::CHARLS_SPIFF_COLOR_SPACE_CMYK,
+    ycck = impl::CHARLS_SPIFF_COLOR_SPACE_YCCK,
+    cie_lab = impl::CHARLS_SPIFF_COLOR_SPACE_CIE_LAB
+};
+
+enum class spiff_compression_type : uint8_t
+{
+    uncompressed = impl::CHARLS_SPIFF_COMPRESSION_TYPE_UNCOMPRESSED,
+    modified_huffman = impl::CHARLS_SPIFF_COMPRESSION_TYPE_MODIFIED_HUFFMAN,
+    modified_read = impl::CHARLS_SPIFF_COMPRESSION_TYPE_MODIFIED_READ,
+    modified_modified_read = impl::CHARLS_SPIFF_COMPRESSION_TYPE_MODIFIED_MODIFIED_READ,
+    jbig = impl::CHARLS_SPIFF_COMPRESSION_TYPE_JBIG,
+    jpeg = impl::CHARLS_SPIFF_COMPRESSION_TYPE_JPEG,
+    jpeg_ls = impl::CHARLS_SPIFF_COMPRESSION_TYPE_JPEG_LS
+};
+
+enum class spiff_resolution_units : uint8_t
+{
+    aspect_ratio = impl::CHARLS_SPIFF_RESOLUTION_UNITS_ASPECT_RATIO,
+    dots_per_inch = impl::CHARLS_SPIFF_RESOLUTION_UNITS_DOTS_PER_INCH,
+    dots_per_centimeter = impl::CHARLS_SPIFF_RESOLUTION_UNITS_DOTS_PER_CENTIMETER
+};
+
+// Official defined SPIFF tags defined in Table F.5 (ISO/IEC 10918-3)
+enum class spiff_entry_tag : uint32_t
+{
+    transfer_characteristics = impl::CHARLS_SPIFF_ENTRY_TAG_TRANSFER_CHARACTERISTICS,
+    component_registration = impl::CHARLS_SPIFF_ENTRY_TAG_COMPONENT_REGISTRATION,
+    image_orientation = impl::CHARLS_SPIFF_ENTRY_TAG_IMAGE_ORIENTATION,
+    thumbnail = impl::CHARLS_SPIFF_ENTRY_TAG_THUMBNAIL,
+    image_title = impl::CHARLS_SPIFF_ENTRY_TAG_IMAGE_TITLE,
+    image_description = impl::CHARLS_SPIFF_ENTRY_TAG_IMAGE_DESCRIPTION,
+    time_stamp = impl::CHARLS_SPIFF_ENTRY_TAG_TIME_STAMP,
+    version_identifier = impl::CHARLS_SPIFF_ENTRY_TAG_VERSION_IDENTIFIER,
+    creator_identification = impl::CHARLS_SPIFF_ENTRY_TAG_CREATOR_IDENTIFICATION,
+    protection_indicator = impl::CHARLS_SPIFF_ENTRY_TAG_PROTECTION_INDICATOR,
+    copyright_information = impl::CHARLS_SPIFF_ENTRY_TAG_COPYRIGHT_INFORMATION,
+    contact_information = impl::CHARLS_SPIFF_ENTRY_TAG_CONTACT_INFORMATION,
+    tile_index = impl::CHARLS_SPIFF_ENTRY_TAG_TILE_INDEX,
+    scan_index = impl::CHARLS_SPIFF_ENTRY_TAG_SCAN_INDEX,
+    set_reference = impl::CHARLS_SPIFF_ENTRY_TAG_SET_REFERENCE
+};
+
+
+} // namespace charls
+
+namespace std
+{
+
+template<>
+struct is_error_code_enum<charls::jpegls_errc> final : true_type
+{
+};
+
+} // namespace std
+
+using charls_jpegls_errc = charls::jpegls_errc;
+
+using CharlsApiResultType = charls::jpegls_errc;
+using CharlsInterleaveModeType = charls::InterleaveMode;
+using CharlsColorTransformationType = charls::ColorTransformation;
+
+using charls_spiff_profile_id = charls::spiff_profile_id;
+using charls_spiff_color_space = charls::spiff_color_space;
+using charls_spiff_compression_type = charls::spiff_compression_type;
+using charls_spiff_resolution_units = charls::spiff_resolution_units;
+using charls_spiff_entry_tag = charls::spiff_entry_tag;
+
+#else
+
+#include <stdint.h>
 
 typedef enum CharlsApiResult charls_jpegls_errc;
-
 typedef enum CharlsApiResult CharlsApiResultType;
 typedef enum CharlsInterleaveMode CharlsInterleaveModeType;
 typedef enum CharlsColorTransformation CharlsColorTransformationType;
 
 #endif
+
+
+struct charls_spiff_header
+{
+    uint16_t version;                               // SPIFF version
+    charls_spiff_profile_id profile_id;             // Application profile
+    uint8_t component_count;                        // Number of color components
+    int32_t height;                                 // Number of lines in image
+    int32_t width;                                  // Number of samples per line
+    charls_spiff_color_space color_space;           // Color space used by image data
+    uint8_t bits_per_sample;                        // Number of bits per sample
+    charls_spiff_compression_type compression_type; // Type of data compression used
+    charls_spiff_resolution_units resolution_units; // Type of resolution units
+    int32_t vertical_resolution;                    // Vertical resolution
+    int32_t horizontal_resolution;                  // Horizontal resolution
+};
 
 
 typedef struct charls_frame_info
@@ -409,22 +591,6 @@ struct JlsRect
     int32_t Y;
     int32_t Width;
     int32_t Height;
-};
-
-
-struct charls_spiff_header
-{
-    uint16_t version;                               // SPIFF version
-    charls_spiff_profile_id profile_id;             // Application profile
-    uint8_t component_count;                        // Number of color components
-    int32_t height;                                 // Number of lines in image
-    int32_t width;                                  // Number of samples per line
-    charls_spiff_color_space color_space;           // Color space used by image data
-    uint8_t bits_per_sample;                        //  Number of bits per sample
-    charls_spiff_compression_type compression_type; // Type of data compression used
-    charls_spiff_resolution_units resolution_units; // Type of resolution units
-    int32_t vertical_resolution;                    // Vertical resolution
-    int32_t horizontal_resolution;                  // Horizontal resolution
 };
 
 
