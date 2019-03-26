@@ -3,10 +3,18 @@
 #pragma once
 
 #ifdef __cplusplus
+
+#include <cstddef>
+#include <cstdint>
+#include <system_error>
+
 namespace charls
 {
 namespace impl
 {
+
+#else
+#include <stdint.h>
 #endif
 
 // The following enum values are for C applications, for C++ the enum are defined after these definitions.
@@ -69,16 +77,16 @@ enum CharlsColorTransformation
     CHARLS_COLOR_TRANSFORMATION_HP3 = 3,
 };
 
-typedef enum charls_spiff_profile_id
+enum charls_spiff_profile_id
 {
     CHARLS_SPIFF_PROFILE_ID_NONE = 0,
     CHARLS_SPIFF_PROFILE_ID_CONTINUOUS_TONE_BASE = 1,
     CHARLS_SPIFF_PROFILE_ID_CONTINUOUS_TONE_PROGRESSIVE = 2,
     CHARLS_SPIFF_PROFILE_ID_BI_LEVEL_FACSIMILE = 3,
     CHARLS_SPIFF_PROFILE_ID_CONTINUOUS_TONE_FACSIMILE = 4
-} charls_spiff_profile_id;
+};
 
-typedef enum charls_spiff_color_space
+enum charls_spiff_color_space
 {
     CHARLS_SPIFF_COLOR_SPACE_BI_LEVEL = 0,
     CHARLS_SPIFF_COLOR_SPACE_YCBCR_ITU_BT_709_VIDEO = 1,
@@ -92,9 +100,9 @@ typedef enum charls_spiff_color_space
     CHARLS_SPIFF_COLOR_SPACE_CMYK = 12,
     CHARLS_SPIFF_COLOR_SPACE_YCCK = 13,
     CHARLS_SPIFF_COLOR_SPACE_CIE_LAB = 14
-} charls_spiff_color_space;
+};
 
-typedef enum charls_spiff_compression_type
+enum charls_spiff_compression_type
 {
     CHARLS_SPIFF_COMPRESSION_TYPE_UNCOMPRESSED = 0,
     CHARLS_SPIFF_COMPRESSION_TYPE_MODIFIED_HUFFMAN = 1,
@@ -103,16 +111,16 @@ typedef enum charls_spiff_compression_type
     CHARLS_SPIFF_COMPRESSION_TYPE_JBIG = 4,
     CHARLS_SPIFF_COMPRESSION_TYPE_JPEG = 5,
     CHARLS_SPIFF_COMPRESSION_TYPE_JPEG_LS = 6
-} charls_spiff_compression_type;
+};
 
-typedef enum charls_spiff_resolution_units
+enum charls_spiff_resolution_units
 {
     CHARLS_SPIFF_RESOLUTION_UNITS_ASPECT_RATIO = 0,
     CHARLS_SPIFF_RESOLUTION_UNITS_DOTS_PER_INCH = 1,
     CHARLS_SPIFF_RESOLUTION_UNITS_DOTS_PER_CENTIMETER = 2
-} charls_spiff_resolution_units;
+};
 
-typedef enum charls_spiff_entry_tag
+enum charls_spiff_entry_tag
 {
     CHARLS_SPIFF_ENTRY_TAG_TRANSFER_CHARACTERISTICS = 2,
     CHARLS_SPIFF_ENTRY_TAG_COMPONENT_REGISTRATION = 3,
@@ -129,7 +137,7 @@ typedef enum charls_spiff_entry_tag
     CHARLS_SPIFF_ENTRY_TAG_TILE_INDEX = 14,
     CHARLS_SPIFF_ENTRY_TAG_SCAN_INDEX = 15,
     CHARLS_SPIFF_ENTRY_TAG_SET_REFERENCE = 16
-} charls_spiff_entry_tag;
+};
 
 #ifdef __cplusplus
 }
@@ -138,11 +146,6 @@ typedef enum charls_spiff_entry_tag
 
 
 #ifdef __cplusplus
-
-#include <cstddef>
-#include <cstdint>
-#include <system_error>
-
 
 // GCC 5.0 cannot handle [[deprecated]] on enum values
 #if defined(__GNUC__) && !defined(__clang__)
@@ -425,7 +428,7 @@ enum class ColorTransformation
     HP3 = impl::CHARLS_COLOR_TRANSFORMATION_HP3,
 };
 
-enum class spiff_profile_id : uint8_t
+enum class spiff_profile_id : int32_t
 {
     none = impl::CHARLS_SPIFF_PROFILE_ID_NONE,
     continuous_tone_base = impl::CHARLS_SPIFF_PROFILE_ID_CONTINUOUS_TONE_BASE,
@@ -434,7 +437,7 @@ enum class spiff_profile_id : uint8_t
     continuous_tone_facsimile = impl::CHARLS_SPIFF_PROFILE_ID_CONTINUOUS_TONE_FACSIMILE
 };
 
-enum class spiff_color_space : uint8_t
+enum class spiff_color_space : int32_t
 {
     bi_level = impl::CHARLS_SPIFF_COLOR_SPACE_BI_LEVEL,
     ycbcr_itu_bt_709_video = impl::CHARLS_SPIFF_COLOR_SPACE_YCBCR_ITU_BT_709_VIDEO,
@@ -450,7 +453,7 @@ enum class spiff_color_space : uint8_t
     cie_lab = impl::CHARLS_SPIFF_COLOR_SPACE_CIE_LAB
 };
 
-enum class spiff_compression_type : uint8_t
+enum class spiff_compression_type : int32_t
 {
     uncompressed = impl::CHARLS_SPIFF_COMPRESSION_TYPE_UNCOMPRESSED,
     modified_huffman = impl::CHARLS_SPIFF_COMPRESSION_TYPE_MODIFIED_HUFFMAN,
@@ -461,7 +464,7 @@ enum class spiff_compression_type : uint8_t
     jpeg_ls = impl::CHARLS_SPIFF_COMPRESSION_TYPE_JPEG_LS
 };
 
-enum class spiff_resolution_units : uint8_t
+enum class spiff_resolution_units : int32_t
 {
     aspect_ratio = impl::CHARLS_SPIFF_RESOLUTION_UNITS_ASPECT_RATIO,
     dots_per_inch = impl::CHARLS_SPIFF_RESOLUTION_UNITS_DOTS_PER_INCH,
@@ -469,7 +472,7 @@ enum class spiff_resolution_units : uint8_t
 };
 
 // Official defined SPIFF tags defined in Table F.5 (ISO/IEC 10918-3)
-enum class spiff_entry_tag : uint32_t
+enum class spiff_entry_tag : int32_t
 {
     transfer_characteristics = impl::CHARLS_SPIFF_ENTRY_TAG_TRANSFER_CHARACTERISTICS,
     component_registration = impl::CHARLS_SPIFF_ENTRY_TAG_COMPONENT_REGISTRATION,
@@ -515,25 +518,27 @@ using charls_spiff_entry_tag = charls::spiff_entry_tag;
 
 #else
 
-#include <stdint.h>
-
 typedef enum CharlsApiResult charls_jpegls_errc;
 typedef enum CharlsApiResult CharlsApiResultType;
 typedef enum CharlsInterleaveMode CharlsInterleaveModeType;
 typedef enum CharlsColorTransformation CharlsColorTransformationType;
+
+typedef int32_t charls_spiff_profile_id;
+typedef int32_t charls_spiff_color_space;
+typedef int32_t charls_spiff_compression_type;
+typedef int32_t charls_spiff_resolution_units;
 
 #endif
 
 
 struct charls_spiff_header
 {
-    uint16_t version;                               // SPIFF version
     charls_spiff_profile_id profile_id;             // Application profile
-    uint8_t component_count;                        // Number of color components
+    int32_t component_count;                        // Number of color components
     int32_t height;                                 // Number of lines in image
     int32_t width;                                  // Number of samples per line
     charls_spiff_color_space color_space;           // Color space used by image data
-    uint8_t bits_per_sample;                        // Number of bits per sample
+    int32_t bits_per_sample;                        // Number of bits per sample
     charls_spiff_compression_type compression_type; // Type of data compression used
     charls_spiff_resolution_units resolution_units; // Type of resolution units
     int32_t vertical_resolution;                    // Vertical resolution
@@ -541,13 +546,13 @@ struct charls_spiff_header
 };
 
 
-typedef struct charls_frame_info
+struct charls_frame_info
 {
     int32_t width;
     int32_t height;
     int32_t bits_per_sample;
     int32_t component_count;
-} charls_frame_info;
+};
 
 
 /// <summary>
@@ -739,5 +744,6 @@ inline ByteStreamInfo FromByteArrayConst(const void* bytes, std::size_t count) n
 #else
 
 typedef struct charls_spiff_header charls_spiff_header;
+typedef struct charls_frame_info charls_frame_info;
 
 #endif

@@ -480,7 +480,7 @@ int JpegStreamReader::TryReadApplicationData8Segment(int32_t segmentSize, charls
     if (segmentSize == 5)
         return TryReadHPColorTransformSegment();
 
-    if (spiff_header && spiff_header_found && segmentSize > 31)
+    if (spiff_header && spiff_header_found && segmentSize >= 30)
         return TryReadSpiffHeaderSegment(spiff_header, *spiff_header_found);
 
     return 0;
@@ -534,17 +534,14 @@ int JpegStreamReader::TryReadSpiffHeaderSegment(charls_spiff_header* spiff_heade
 
     const auto high_version = ReadByte();
     if (high_version != 1)
-        throw jpegls_error{jpegls_errc::invalid_marker_segment_size}; // TODO
+        return 7; // Treat unknown versions as if the SPIFF header doesn't exists.
 
     SkipByte(); // low version
 
     spiff_header->profile_id = static_cast<spiff_profile_id>(ReadByte());
     spiff_header->component_count = ReadByte();
-    if (spiff_header->component_count == 0)
-        throw jpegls_error{jpegls_errc::invalid_marker_segment_size}; // TODO
-
-    spiff_header->width = ReadInt32();
     spiff_header->height = ReadInt32();
+    spiff_header->width = ReadInt32();
     spiff_header->color_space = static_cast<spiff_color_space>(ReadByte());
     spiff_header->bits_per_sample = ReadByte();
     spiff_header->compression_type = static_cast<spiff_compression_type>(ReadByte());
@@ -553,7 +550,7 @@ int JpegStreamReader::TryReadSpiffHeaderSegment(charls_spiff_header* spiff_heade
     spiff_header->horizontal_resolution = ReadInt32();
 
     spiff_header_found = true;
-    return 32;
+    return 30;
 }
 
 

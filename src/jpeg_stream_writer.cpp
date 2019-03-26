@@ -46,11 +46,11 @@ void JpegStreamWriter::WriteSpiffHeaderSegment(const charls_spiff_header& spiff_
     segment.push_back(1);
     segment.push_back(0);
     segment.push_back(static_cast<uint8_t>(spiff_header.profile_id));
-    segment.push_back(spiff_header.component_count);
+    segment.push_back(static_cast<uint8_t>(spiff_header.component_count));
     push_back(segment, static_cast<uint32_t>(spiff_header.height));
     push_back(segment, static_cast<uint32_t>(spiff_header.width));
     segment.push_back(static_cast<uint8_t>(spiff_header.color_space));
-    segment.push_back(spiff_header.bits_per_sample);
+    segment.push_back(static_cast<uint8_t>(spiff_header.bits_per_sample));
     segment.push_back(static_cast<uint8_t>(spiff_header.compression_type));
     segment.push_back(static_cast<uint8_t>(spiff_header.resolution_units));
     push_back(segment, static_cast<uint32_t>(spiff_header.vertical_resolution));

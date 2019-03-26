@@ -8,12 +8,13 @@
 
 #include <cstdint>
 #include <vector>
+#include <array>
 
-using charls::jpegls_errc;
-using charls::JpegStreamReader;
+using namespace charls;
 using Microsoft::VisualStudio::CppUnitTestFramework::Assert;
 using std::system_error;
 using std::vector;
+using std::array;
 
 namespace CharLSUnitTest
 {
@@ -22,9 +23,9 @@ TEST_CLASS(JpegStreamReaderTest)
 public:
     TEST_METHOD(ReadHeaderFromToSmallInputBuffer)
     {
-        uint8_t buffer[1];
+        array<uint8_t, 1> buffer{};
 
-        const ByteStreamInfo byteStream = FromByteArray(buffer, 0);
+        const ByteStreamInfo byteStream = FromByteArray(buffer.data(), 0);
         JpegStreamReader reader(byteStream);
 
         try
@@ -542,6 +543,81 @@ public:
         }
 
         Assert::Fail();
+    }
+
+    TEST_METHOD(ReadSpiffHeader)
+    {
+        vector<uint8_t> buffer;
+        buffer.push_back(0xFF);
+        buffer.push_back(0xD8); // SOI.
+        buffer.push_back(0xFF);
+        buffer.push_back(0xE8); // ApplicationData8
+        buffer.push_back(0);
+        buffer.push_back(32);
+
+        // SPIFF identifier string.
+        buffer.push_back('S');
+        buffer.push_back('P');
+        buffer.push_back('I');
+        buffer.push_back('F');
+        buffer.push_back('F');
+        buffer.push_back(0);
+
+        // Version
+        buffer.push_back(1);
+        buffer.push_back(0);
+
+        buffer.push_back(0); // profile id
+        buffer.push_back(3); // component count
+
+        // Height
+        buffer.push_back(0);
+        buffer.push_back(0);
+        buffer.push_back(0x3);
+        buffer.push_back(0x20);
+
+        // Width
+        buffer.push_back(0);
+        buffer.push_back(0);
+        buffer.push_back(0x2);
+        buffer.push_back(0x58);
+
+        buffer.push_back(10); // color space
+        buffer.push_back(8); // bits per sample
+        buffer.push_back(6); // compression type
+        buffer.push_back(1); // resolution units
+
+        // vertical_resolution
+        buffer.push_back(0);
+        buffer.push_back(0);
+        buffer.push_back(0);
+        buffer.push_back(96);
+
+        // header.horizontal_resolution = 1024;
+        buffer.push_back(0);
+        buffer.push_back(0);
+        buffer.push_back(4);
+        buffer.push_back(0);
+
+        const ByteStreamInfo byteStream = FromByteArray(buffer.data(), buffer.size());
+        JpegStreamReader reader(byteStream);
+
+        charls_spiff_header spiff_header{};
+        bool spiff_header_found{};
+
+        reader.ReadHeader(&spiff_header, &spiff_header_found);
+
+        Assert::IsTrue(spiff_header_found);
+        Assert::AreEqual(static_cast<int32_t>(spiff_profile_id::none), static_cast<int32_t>(spiff_header.profile_id));
+        Assert::AreEqual(3, spiff_header.component_count);
+        Assert::AreEqual(800, spiff_header.height);
+        Assert::AreEqual(600, spiff_header.width);
+        Assert::AreEqual(static_cast<int32_t>(spiff_color_space::rgb), static_cast<int32_t>(spiff_header.color_space));
+        Assert::AreEqual(8, spiff_header.bits_per_sample);;
+        Assert::AreEqual(static_cast<int32_t>(spiff_compression_type::jpeg_ls), static_cast<int32_t>(spiff_header.compression_type));
+        Assert::AreEqual(static_cast<int32_t>(spiff_resolution_units::dots_per_inch), static_cast<int32_t>(spiff_header.resolution_units));
+        Assert::AreEqual(96, spiff_header.vertical_resolution);
+        Assert::AreEqual(1024, spiff_header.horizontal_resolution);
     }
 };
 } // namespace CharLSUnitTest
