@@ -29,10 +29,10 @@ CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
 charls_jpegls_decoder_source_buffer(struct charls_jpegls_decoder* decoder, const void* buffer, size_t size);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-charls_jpegls_decoder_read_spiff_header(struct charls_jpegls_decoder* decoder, void* header); // ok, not_present, not_valid
+charls_jpegls_decoder_read_spiff_header(const struct charls_jpegls_decoder* decoder, charls_spiff_header* spiff_header, int32_t* header_found);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-charls_jpegls_decoder_read_header(struct charls_jpegls_decoder* decoder);
+charls_jpegls_decoder_read_header(const struct charls_jpegls_decoder* decoder);
 
 CHARLS_API_IMPORT_EXPORT charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
 charls_jpegls_decoder_decode_to_buffer(const struct charls_jpegls_decoder* decoder, void* buffer, size_t size);

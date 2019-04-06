@@ -20,15 +20,26 @@ struct charls_jpegls_decoder
 
         source_buffer_ = buffer;
         size_ = size;
+
+        ByteStreamInfo source{ FromByteArrayConst(source_buffer_, size_) };
+        reader_ = std::make_unique<JpegStreamReader>(source);
     }
 
-    void read_header()
+    bool read_header(charls_spiff_header* spiff_header) const
     {
-        if (reader_)
+        if (!reader_)
             throw jpegls_error{jpegls_errc::invalid_operation};
 
-        ByteStreamInfo source{FromByteArrayConst(source_buffer_, size_)};
-        reader_ = std::make_unique<JpegStreamReader>(source);
+        bool spiff_header_found{};
+        reader_->ReadHeader(spiff_header, &spiff_header_found);
+        return spiff_header_found;
+    }
+
+    void read_header() const
+    {
+        if (!reader_)
+            throw jpegls_error{jpegls_errc::invalid_operation};
+
         reader_->ReadHeader();
         reader_->ReadStartOfScan(true);
     }
@@ -84,11 +95,12 @@ extern "C"
     }
 
     charls_jpegls_errc CHARLS_API_CALLING_CONVENTION
-    charls_jpegls_decoder_read_spiff_header(charls_jpegls_decoder* /*decoder*/, void* /*header*/)
+    charls_jpegls_decoder_read_spiff_header(const charls_jpegls_decoder* const decoder, charls_spiff_header* spiff_header, int32_t* header_found)
     {
         try
         {
-            return jpegls_errc::unexpected_failure; // TODO
+            *header_found = decoder->read_header(spiff_header);
+            return jpegls_errc::success;
         }
         catch (...)
         {
@@ -97,7 +109,7 @@ extern "C"
     }
 
     jpegls_errc CHARLS_API_CALLING_CONVENTION
-    charls_jpegls_decoder_read_header(charls_jpegls_decoder* decoder)
+    charls_jpegls_decoder_read_header(const charls_jpegls_decoder* const decoder)
     {
         try
         {
