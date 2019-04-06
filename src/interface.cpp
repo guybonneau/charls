@@ -36,10 +36,7 @@ void VerifyInput(const ByteStreamInfo& destination, const JlsParameters& paramet
     switch (parameters.components)
     {
     case 3:
-        break;
     case 4:
-        if (parameters.interleaveMode == InterleaveMode::Sample)
-            throw jpegls_error{jpegls_errc::invalid_argument_interleave_mode};
         break;
     default:
         if (parameters.interleaveMode != InterleaveMode::None)
@@ -48,6 +45,27 @@ void VerifyInput(const ByteStreamInfo& destination, const JlsParameters& paramet
     }
 }
 
+
+jpegls_errc to_jpegls_errc() noexcept
+{
+    try
+    {
+        // re-trow the exception.
+        throw;
+    }
+    catch (const jpegls_error& error)
+    {
+        return static_cast<jpegls_errc>(error.code().value());
+    }
+    catch (const std::bad_alloc&)
+    {
+        return jpegls_errc::not_enough_memory;
+    }
+    catch (...)
+    {
+        return jpegls_errc::unexpected_failure;
+    }
+}
 
 void EncodeScan(const JlsParameters& params, int componentCount, ByteStreamInfo source, JpegStreamWriter& writer)
 {
