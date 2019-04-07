@@ -45,28 +45,6 @@ void VerifyInput(const ByteStreamInfo& destination, const JlsParameters& paramet
     }
 }
 
-
-jpegls_errc to_jpegls_errc() noexcept
-{
-    try
-    {
-        // re-trow the exception.
-        throw;
-    }
-    catch (const jpegls_error& error)
-    {
-        return static_cast<jpegls_errc>(error.code().value());
-    }
-    catch (const std::bad_alloc&)
-    {
-        return jpegls_errc::not_enough_memory;
-    }
-    catch (...)
-    {
-        return jpegls_errc::unexpected_failure;
-    }
-}
-
 void EncodeScan(const JlsParameters& params, int componentCount, ByteStreamInfo source, JpegStreamWriter& writer)
 {
     JlsParameters info{params};
